@@ -1,0 +1,126 @@
+<% include ../header %>
+<form class='containers offset-2 col-8' method='post' action='/profil'>
+<h3>Informations</h3>
+  <div class="form-row">
+    <div class="form-group col-md-3">
+      <label for='pgenre'>Genre</label>
+	  <select class='form-control' name='pgenre' id='pgenre'>
+	  <option <% if (locals.gprofil && locals.gprofil.genre && locals.gprofil.genre === 1) {%>selected='selected'<%}%>value='1'>Homme</option>
+	  <option <% if (locals.gprofil && locals.gprofil.genre && locals.gprofil.genre === 2) {%>selected='selected'<%}%>value='2'>Femme</option>
+	  </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-13">
+      <label for='page'>Age</label>
+      <input type='number' class="form-control" id='page' name='page' <% if (locals.gprofil && locals.gprofil.age) {%>value=<%= locals.gprofil.age%> <% } else { %> value='18'<% } %> min='18' max='130'>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-3">
+	  <label for='porientation'>Preference</label>
+	  <select class='form-control' name='porientation' id='porientation'>
+	  <option <% if (locals.gprofil && locals.gprofil.orientation && locals.gprofil.orientation === 1) {%>selected='selected'<%}%>value='1'>Homme</option>
+	  <option <% if (locals.gprofil && locals.gprofil.orientation && locals.gprofil.orientation === 2) {%>selected='selected'<%}%>value='2'>Femme</option>
+	  <option <% if (locals.gprofil && locals.gprofil.orientation && locals.gprofil.orientation === 3) {%>selected='selected'<%}%>value='3'>Bi</option>
+	  </select>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-10">
+      <label for='pbio'>Biographie</label>
+      <textarea class="form-control" id='pbio' name='pbio' placeholder="X mots max." rows='5' ><% if (locals.gprofil && locals.gprofil.bio) {%><%= locals.gprofil.bio%><% }%></textarea>
+    </div>
+  </div>
+  <button id="validate" type="submit" class="btn btn-primary">Sauvegarder</button>
+</form>
+<hr />
+
+
+
+
+
+<form class='containers offset-2 col-8' method='post' action='/upload' enctype="multipart/form-data">
+<h3>Photo de profil</h3>
+  <div class="form-row">
+	<% if (locals.profil) { %>
+	 <img src='<%= locals.profil %>' class="img-thumbnail profil" alt="Photo profil">
+	<% } else { %>
+	 <img src="upload/noprofil.png" class="img-thumbnail profil" alt="Photo profil">
+	<% }  %>
+    <div class="form-group col-md-6">
+      <label class='btn btn-info btn-file'>Selectionner
+      <input type='file' style='display: none;' id='img1' name='img1'></label>
+    </div>
+  </div>
+  <button id="validate" type="submit" class="btn btn-primary">Uploader</button>
+</form>
+<hr />
+
+
+
+
+<form class='containers offset-2 col-8' method='post' action='/addtag'>
+  <div class="form-row">
+    <div class="form-group col-md-10">
+      <label for='ptag'>Liste d’interêts</label>
+		<div class='row'>
+		<div class='col-md-5'>
+			<input class="form-control" id='ptag' name='ptag' placeholder="tag">
+			<button id="validate" type="submit" class="btn btn-primary">Ajouter</button>
+		</div>
+		<div class='col-7'>
+			<% if (locals.tag) {locals.tag.forEach(function(tmp) {%>
+				<span class='badge badge-info'><%= tmp %> <a href='/tag/<%= tmp %>' >X</a> </span>
+			<%})}%>
+		</div>
+		</div>
+	</div>
+</div>
+</form>
+<hr />
+
+
+
+<form class='containers offset-2 col-8' method='post' action='/upload' enctype="multipart/form-data">
+<h3>Photos</h3>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+	<% if (locals.imgprof1) { %>
+	 <img src='<%= locals.imgprof1 %>' class="img-thumbnail profil" alt="Photo profil">
+	<% } %>
+      <label class='btn btn-info btn-file'>Image 1
+      <input type='file' style='display: none;' id='img2' name='img2'></label>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+	<% if (locals.imgprof2) { %>
+	 <img src='<%= locals.imgprof2 %>' class="img-thumbnail profil" alt="Photo profil">
+	<% } %>
+      <label class='btn btn-info btn-file'>Image 2
+      <input type='file' style='display: none;' id='img3' name='img3'></label>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+	<% if (locals.imgprof3) { %>
+	 <img src='<%= locals.imgprof3 %>' class="img-thumbnail profil" alt="Photo profil">
+	<% } %>
+      <label class='btn btn-info btn-file'>Image 3
+      <input type='file' style='display: none;' id='img4' name='img4'></label>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+	<% if (locals.imgprof4) { %>
+	 <img src='<%= locals.imgprof4 %>' class="img-thumbnail profil" alt="Photo profil">
+	<% } %>
+      <label class='btn btn-info btn-file'>Image 4
+      <input type='file' style='display: none;' id='img5' name='img5'></label>
+    </div>
+  </div>
+  <button id="validate" type="submit" class="btn btn-primary">Uploader</button>
+  </form>
+<% include ../footer %>

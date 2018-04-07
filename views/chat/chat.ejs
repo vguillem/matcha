@@ -1,0 +1,27 @@
+<% include ../header %>
+<div class='container'>
+	<form action=''>
+	<div class='card offset-md-1 col-md-9'>
+		<div class="card-header">Message</div>
+		<ul id='message' class='card-body'>content</ul>
+	</div>
+	<div class='row'>
+		<input id='m' class="offset-1 col-md-9"/><button>Envoyer</button>
+		</div>
+	</form>
+</div>
+<script src="/socket.io-client/dist/socket.io.js"></script>
+<script>
+	$(function() {
+	var socket = io.connect()
+	$('form').submit(function() {
+		socket.emit('chat message', $('#m').val())
+		$('#m').val('')
+		return false
+	})
+	socket.on('chat message', function(msg) {
+		$('#message').append($('<li>').text(msg))
+	})
+	})
+</script>
+<% include ../footer %>

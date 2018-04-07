@@ -1,0 +1,31 @@
+<% include ../header %>
+<form class='containers offset-1 offset-md-4 col-md-4 col-10' method='post' action='/login' >
+  <div class="form-row">
+    <div class="form-group offset-md-2 col-md-8">
+      <label for='llogin'>Login</label>
+      <input type="text" class="form-control" id='llogin' name='llogin' placeholder="Login" value=''>
+    </div>
+  </div>
+    <div class="form-row">
+        <div class="form-group offset-md-2 col-md-8">
+      <label for="lpasswd">Password</label>
+      <input type="password" class="form-control" id='lpasswd' name='lpasswd' placeholder="Password">
+    </div>
+  </div>
+	<div class="row">
+		<div class="offset-5">
+			<a href="/forgot">Mot de passe oublié</a>
+		</div>
+	</div>
+	<div class="row">
+		<div class="offset-5">
+			<a href="/create">pas encore de compte</a>
+		</div>
+	</div>
+	<div class="row">
+		<div class="offset-1">
+			<button type="submit" class="btn btn-primary offset-md-3">Login</button>
+		</div>
+	</div>
+</form>
+<% include ../footer %>

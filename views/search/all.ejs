@@ -1,0 +1,35 @@
+<% include ../header %>
+
+<form class='containers offset-1 col-10'>
+	<div class='row'>
+		<% if (locals.users) {locals.users.forEach(function(tmp) {%>
+		<div class='ml-2 ml-lg-5 mr-5 col-lg-3 border border-dark mb-5'>
+			<div class='row'>
+				<div class=' col-12'>
+					 <img src="upload/<%= tmp.uid%>-1.png" class="img-thumbnail profil float-left ml-1 mr-1" alt="Photo profil">
+	 <p><%= tmp.login%><br/>
+	 <%= tmp.age%> ans<br/>
+	 <% if (tmp.genre === 1) {%>
+	 Homme<br/>
+	 <% } else {%>
+	 Femme<br/></p>
+	 <% } if (locals.like && locals.like[tmp.id_user]) {%>
+		<a href="/unlike/<%= tmp.uid%>" class='badge badge-primary'>Ne plus matcher</a>
+	 <% } else {%>
+		<a href="/like/<%= tmp.uid%>" class='badge badge-primary'>Matcher</a>
+	 <% }%>
+				</div>
+			</div>
+			<div class='row'>
+					<span class='bg-light col-12'><%= tmp.bio%></span>
+			</div>
+			<div>
+			<% if (tmp.tags) {tmp.tags.forEach(function(ta) {%>
+				<span class='badge badge-info'><%= ta %> </span>
+			<%})}%>
+			</div>
+		</div>
+	<%})}%>
+	</div>
+</form>
+<% include ../footer %>

@@ -1,0 +1,25 @@
+<% include ../header %>
+<form class='containers offset-2 col-8' method='post' action='/compte' >
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for='cfirstname'>Prénom</label>
+      <input type="text" class="form-control" id='cfirstname' name='cfirstname' placeholder="Prénom">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="clastname">Nom</label>
+      <input type="text" class="form-control" id='clastname' name='clastname' placeholder="Nom">
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for='cemail'>Email</label>
+      <input type="email" class="form-control" id='cemail' name='cmail' placeholder="Email">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="cpasswd">Password (8 min)</label>
+      <input type="password" class="form-control" id='cpasswd' name='cpasswd' placeholder="Password">
+    </div>
+  </div>
+  <button id="validate" type="submit" class="btn btn-primary">Modifier</button>
+</form>
+<% include ../footer %>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <title>Matcha</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="bootstrap/js/bootstrap.min.js"></script>
+  <script src="js.js"></script>
+
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light hfcolor sticky-top">
+  <a class="navbar-brand" href="/sall">Matcha</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+
+	<% if (locals.user) { %>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Mon compte
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="/compte"><img src='./glyphicons_free/glyphicons/png/glyphicons-4-user.png' class='icons'></span>Mon compte</a>
+          <a class="dropdown-item" href="/profil"><img src='./glyphicons_free/glyphicons/png/glyphicons-30-notes-2.png' class='icons'>Mon Profil</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="/logout"><img src='./glyphicons_free/glyphicons/png/glyphicons-388-log-out.png' class='icons'>logout</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/logout"><img src='./glyphicons_free/glyphicons/png/glyphicons-388-log-out.png' class='icons'>Deconnection</a>
+      </li>
+	  <% } else {%>
+      <li class="nav-item">
+        <a class="nav-link" href="/create">Inscription</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/login"><img src='./glyphicons_free/glyphicons/png/glyphicons-387-log-in.png' class='icons'>Connexion</a>
+      </li>
+	  <% }%>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+  </div>
+</nav>
+<div class='containers'>
+<div class='containers offset-1 col-10'>
+	<div class="row">
+		<div class="offset-md-3 col-md-6">
+	<% if (locals.flash && locals.flash.succes) { %>
+	<div class='alert alert-success' role='success'>
+		<%= flash.succes %>
+	</div>
+	<% } %>
+	<% if (locals.flash && locals.flash.error) { %>
+	<div class='alert alert-danger' role='alert'>
+		<%= flash.error %>
+	</div>
+	<% } %>
+		</div>
+	</div>
+</div>
