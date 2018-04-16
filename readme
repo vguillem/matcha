@@ -1,0 +1,12 @@
+configuration des docker
+
+dans le docker node:
+#install bdd matcha.
+node app/api/config/setup.js
+
+
+dans le docker db :
+#conf mysql group by
+mysql -p
+matcha
+SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));
