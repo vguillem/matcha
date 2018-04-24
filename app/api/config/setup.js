@@ -18,12 +18,12 @@ bdd.connect((err) => {
 		console.log('Use matcha OK');
 	})
 
-	bdd.query("CREATE TABLE IF NOT EXISTS users (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, login VARCHAR(255), mail VARCHAR(255), firstname VARCHAR(255), lastname VARCHAR(255), passwd TEXT, date DATE)", (err, result) => {
+	bdd.query("CREATE TABLE IF NOT EXISTS users (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, login VARCHAR(255) UNIQUE, mail VARCHAR(255) UNIQUE, firstname VARCHAR(255), lastname VARCHAR(255), passwd TEXT, date DATE, lastco DATETIME)", (err, result) => {
 		if (err) throw err;
 		console.log('table users ok');
 	});
 
-	bdd.query("CREATE TABLE IF NOT EXISTS profil (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, id_user INT UNSIGNED, genre INT(2), orientation INT(3), bio TEXT, age INT UNSIGNED, INDEX c_id_user (id_user), FOREIGN KEY (id_user) REFERENCES users(id))", (err, result) => {
+	bdd.query("CREATE TABLE IF NOT EXISTS profil (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, pop INT UNSIGNED DEFAULT '0', img_profil INT UNSIGNED DEFAULT '0', geolocalise INT UNSIGNED DEFAULT '0', id_user INT UNSIGNED, genre INT(2), orientation INT(3), bio TEXT, age INT UNSIGNED, ville VARCHAR(255), lat DECIMAL(10, 8), lng DECIMAL(10, 8), INDEX c_id_user (id_user), FOREIGN KEY (id_user) REFERENCES users(id))", (err, result) => {
 		if (err) throw err;
 		console.log('table profil ok');
 	});
@@ -41,5 +41,10 @@ bdd.connect((err) => {
 	bdd.query("CREATE TABLE IF NOT EXISTS tlike (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, id_likeur INT UNSIGNED, id_liker INT UNSIGNED, INDEX c_id_likeur (id_likeur), FOREIGN KEY (id_likeur) REFERENCES users(id), INDEX c_id_liker (id_liker), FOREIGN KEY (id_liker) REFERENCES users(id))", (err, result) => {
 		if (err) throw err;
 		console.log('table join_tag ok');
+	});
+
+	bdd.query("CREATE TABLE IF NOT EXISTS history (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, action VARCHAR(255), id_visiteur INT UNSIGNED, id_visite INT UNSIGNED, heure DATETIME, INDEX c_id_visiteur (id_visiteur), FOREIGN KEY (id_visiteur) REFERENCES users(id), INDEX c_id_visite (id_visite), FOREIGN KEY (id_visite) REFERENCES users(id))", (err, result) => {
+		if (err) throw err;
+		console.log('table history ok');
 	});
 });

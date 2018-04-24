@@ -5,4 +5,4 @@ ENV MYSQL_DATABASE matcha
 ENV MYSQL_USER matcha
 ENV MYSQL_PASSWORD matcha
 
-#ADD setup.sql /docker-entrypoint-initdb.d
+ADD dump.sql /docker-entrypoint-initdb.d

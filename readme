@@ -7,6 +7,6 @@ node app/api/config/setup.js
 
 dans le docker db :
 #conf mysql group by
-mysql -p
-matcha
-SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));
+ajouter dans le fichier /etc/mysql/mysql.conf.d/mysqld.cnf
+sql_mode = "STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
+redemarer le conteneur

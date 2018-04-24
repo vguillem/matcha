@@ -83,6 +83,26 @@
 
 
 
+
+<% if (locals.gprofil) {%>
+<form class='containers offset-2 col-8' method='post' action='/localisation'>
+  <div class="form-row">
+    <div class="form-group col-md-10">
+      <label for='ptag'>Coordonnées</label>
+		<div class='row'>
+		<div class='col-md-5'>
+			<input class="form-control" id='pcoordonnees' name='pcoordonnees' placeholder="Ville" <% if (locals.gprofil && locals.gprofil.geolocalise && locals.gprofil.geolocalise === 1 && locals.gprofil.ville) {%> value='<%= locals.gprofil.ville %>'<%}%>>
+			<button id="validate" type="submit" class="btn btn-primary">Localiser</button>
+		</div>
+		</div>
+	</div>
+</div>
+</form>
+<hr />
+<% }%>
+
+
+
 <form class='containers offset-2 col-8' method='post' action='/upload' enctype="multipart/form-data">
 <h3>Photos</h3>
   <div class="form-row">

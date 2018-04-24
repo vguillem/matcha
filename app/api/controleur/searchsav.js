@@ -3,8 +3,9 @@ exports.sall = (req, res) => {
 	var search = require('../modele/search.js')
 	if (req.session.user)
 		pro.getprofil (req.session.user.id, (rows) => {
-			if (rows[0])
+			if (rows[0] && rows[0].bio !== NULL)
 			{
+			console.log(rows[0].bio)
 				if (res.locals.profil)
 				{
 					search.all (req.session.user.id, rows[0].genre, rows[0].orientation, (rows2) => {

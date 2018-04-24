@@ -1,16 +1,41 @@
 var fs = require('fs')
+var getCoords = require ('city-to-coords')
 
 exports.unlike = (req, res) => {
+	var hist = require('../modele/hist.js')
 	var pro = require('../modele/profil.js')
 	pro.unlike(req.session.user.id, req.params.id)
+	hist.unlike(req.session.user.id, req.params.id)
 	res.redirect('/sall')
 }
 
 
 exports.like = (req, res) => {
 	var pro = require('../modele/profil.js')
+	var hist = require('../modele/hist.js')
+	pro.unlike(req.session.user.id, req.params.id)
 	pro.like(req.session.user.id, req.params.id)
+	hist.like(req.session.user.id, req.params.id)
 	res.redirect('/sall')
+}
+
+
+
+exports.localisation = (req, res) => {
+	var pro = require('../modele/profil.js')
+	if (req.body.pcoordonnees) {
+		getCoords(req.body.pcoordonnees)
+		.then((coords) => {
+			pro.localisation(req.session.user.id, req.body.pcoordonnees, coords.lat, coords.lng)
+			req.flash('succes', 'Ville ajoutée')
+			res.redirect('/profil')
+		}).catch((err) => {
+			req.flash('error', 'Ville invalide')
+			res.redirect('/profil')
+		})
+	}
+	else
+		res.redirect('/profil')
 }
 
 exports.getprofil = (req, res) => {
@@ -63,14 +88,19 @@ exports.addtag = (req, res) => {
 	res.redirect('/profil')
 }
 
+//proteger bad upload
 exports.upload = (req, res) => {
 	var fstream
+	var pro = require('../modele/profil.js')
 	req.pipe(req.busboy)
 	req.busboy.on('file', (fieldname, file, filename) => {
 		if (filename !== '') {
 			req.flash('succes', 'Photo uplode')
 			if (fieldname === 'img1')
+			{
+				pro.img_profil_ok(req.session.user.id)
 				fstream = fs.createWriteStream(__dirname + '/../public/upload/' + req.session.user.id + '-1.png')
+			}
 			else if (fieldname === 'img2')
 				fstream = fs.createWriteStream(__dirname + '/../public/upload/' + req.session.user.id + '-2.png')
 			else if (fieldname === 'img3')

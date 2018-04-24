@@ -33,6 +33,26 @@ class Auth {
 			cb(rows)
 		})
 	}
+
+	static iploc (id, ville, lat, lng) {
+		var sql = "SELECT id FROM profil WHERE id_user= ?"
+		var inserts = [id]
+		bdd.query(mysql.format(sql, inserts), (err, rows) => {
+			if (err) throw err
+			if (rows[0])
+			{
+				var sql2 = "UPDATE profil SET ville=?, lat=?, lng=? WHERE id_user=? AND geolocalise='0'"
+				var inserts2 = [ville, lat, lng, id]
+				bdd.query(mysql.format(sql2, inserts2))
+			}
+			else 
+			{
+				var sql3 = "INSERT INTO profil SET id_user=?, ville=?, lat=?, lng=?"
+				var inserts3 = [id, ville, lat, lng]
+				bdd.query(mysql.format(sql3, inserts3))
+			}
+		})
+	}
 }
 
 module.exports = Auth

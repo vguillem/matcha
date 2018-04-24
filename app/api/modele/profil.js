@@ -35,6 +35,20 @@ class Profil {
 	}
 
 
+
+
+	static localisation (id, ville, lat, lng) {
+		var sql = "UPDATE profil SET ville= ?, lat= ?, lng= ?, geolocalise='1' where id_user= ?"
+		var inserts = [ville, lat, lng, id]
+		bdd.query(mysql.format(sql, inserts))
+	}
+
+
+	static img_profil_ok (id) {
+		var sql = "UPDATE profil SET img_profil='1' where id_user= ?"
+		var inserts = [id]
+		bdd.query(mysql.format(sql, inserts))
+	}
 	static create (login, age, genre, bio, orientation) {
 		var sql = "INSERT INTO profil SET id_user= ?, age= ?, genre= ?, orientation= ?, bio= ?"
 		var inserts = [login, age, genre, orientation, bio]

@@ -1,4 +1,20 @@
 var bcrypt = require('bcrypt')
+var iploc = require('iplocation')
+var sendmail = require('sendmail')();
+
+exports.resetmdp = (req, res) => {
+	 
+	 sendmail({
+		from: 'vgui@localhost.com',
+		to: 'v.guillemer@gmail.com',
+		subject: 'test sendmail',
+		html: 'Mail of test sendmail ',
+	}, function(err, reply) {
+		console.log(err && err.stack);
+		console.dir(reply);
+	});
+		res.redirect('/')
+}
 
 exports.login = (req, res) => {
 	if (req.body.llogin === undefined || req.body.lpasswd === undefined) {
@@ -15,6 +31,10 @@ exports.login = (req, res) => {
 					if (hash) {
 						req.session.user = rows[0]
 						req.flash('succes', 'Autentification reussie.')
+						var ip = req.headers['x-forward-for'] || req.connection.remoteAddress
+						iploc(ip, (err, loc) => {
+							auth.iploc(req.session.user.id, loc.city, loc.latitude, loc.longitude)
+						})
 						res.redirect('/sall')
 					}
 					else

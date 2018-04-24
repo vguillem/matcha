@@ -5,7 +5,7 @@ var bodyparser = require('body-parser')
 var session = require('express-session')
 var Auth = require('./controleur/auth')
 var Profil = require('./controleur/profil')
-var Sall = require('./controleur/search')
+var Search = require('./controleur/search')
 var fs = require('fs')
 var busboy = require('connect-busboy')
 var io = require('socket.io')(http)
@@ -29,6 +29,7 @@ app.use(require('./middleware/flash'))
 app.use(require('./middleware/login'))
 app.use(require('./middleware/secu'))
 app.use(require('./middleware/profil'))
+app.use(require('./middleware/lastco'))
 
 
 // Routes
@@ -71,6 +72,11 @@ app.get('/tag/:id', (req, res) => {
 })
 
 
+app.post('/localisation', (req, res) => {
+	Profil.localisation(req, res)
+})
+
+
 app.get('/compte', (req, res) => {
 	res.render('auth/compte')
 })
@@ -100,12 +106,17 @@ app.post('/addtag', (req, res) => {
 })
 
 
+
 app.get('/sall', (req, res) => {
-	Sall.sall(req, res)
+	Search.sall(req, res)
 })
 
-app.post('/user/:id', (req, res) => {
-	res.render('chat/chat')
+app.post('/sall', (req, res) => {
+	Search.sallpost(req, res)
+})
+
+app.get('/user', (req, res) => {
+	Search.user(req, res)
 })
 
 
@@ -119,6 +130,11 @@ app.get('/like/:id', (req, res) => {
 
 app.get('/chat', (req, res) => {
 	res.render('chat/chat')
+})
+
+
+app.post('/resetmdp', (req, res) => {
+	Auth.resetmdp(req, res)
 })
 
 

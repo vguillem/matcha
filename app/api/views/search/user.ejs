@@ -1,0 +1,53 @@
+<% include ../header %>
+
+<form class='containers offset-1 col-10'>
+	<div class='row'>
+		<% if (locals.users) {locals.users.forEach(function(tmp) {%>
+		<div class='ml-2 ml-lg-5 mr-5 col-lg-3 border border-dark mb-5'>
+			<div class='row'>
+				<div class=' col-12'>
+					<% if (tmp.img_profil === 1) { %>
+					 <a href="/user?id=<%= tmp.uid%>"><img src="upload/<%= tmp.uid%>-1.png" class="img-thumbnail profil float-left ml-1 mr-1" alt="Photo profil"></a>
+					 <% } else { %>
+					 <a href="/user?id=<%= tmp.uid%>"><img src="upload/noprofil.png" class="img-thumbnail profil float-left ml-1 mr-1" alt="Photo profil"></a>
+					 <% } %>
+	 <p><%= tmp.login%><br/>
+	 <%= tmp.firstname%><br/>
+	 <%= tmp.lastname%><br/>
+	 membre depuis : <%= tmp.inscription%><br/>
+	 <% if (tmp.tlastco > 360) { %>
+		derniere connection : <%= tmp.lastco%><br/>
+	<% } else { %>
+		En ligne.<br />
+		<% } %>
+	 <%= tmp.age%> ans<br/>
+	 <% if (tmp.orientation === 1) {%>
+	 cherche : Homme<br/>
+	 <% } else if (tmp.orientation === 2) {%>
+	 Cherche : Femme<br/>
+	 <% } else {%>
+	 Cherche : Homme/Femme<br/>
+	 <% } if (tmp.genre === 1) {%>
+	 sexe : Homme<br/>
+	 <% } else {%>
+	 sexe : Femme<br/></p>
+	 <% } if (locals.like && locals.like[tmp.id_user]) {%>
+		<a href="/unlike/<%= tmp.uid%>" class='badge badge-primary'>Ne plus matcher</a>
+	 <% } else {%>
+		<a href="/like/<%= tmp.uid%>" class='badge badge-primary'>Matcher</a>
+	 <% }%>
+				</div>
+			</div>
+			<div class='row'>
+					<span class='bg-light col-12'><%= tmp.bio%></span>
+			</div>
+			<div>
+			<% if (tmp.tags) {tmp.tags.forEach(function(ta) {%>
+				<span class='badge badge-info'><%= ta %> </span>
+			<%})}%>
+			</div>
+		</div>
+	<%})}%>
+	</div>
+</form>
+<% include ../footer %>
