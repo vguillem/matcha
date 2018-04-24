@@ -1,19 +1,106 @@
 var bcrypt = require('bcrypt')
 var iploc = require('iplocation')
-var sendmail = require('sendmail')();
+var nodemailer = require('nodemailer');
+
+exports.resetmdppost = (req, res) => {
+	var ente = req.originalUrl.split('?')
+	ente = ente[1].split('=')
+	var num = /[0-9]/
+	var min = /[a-z]/
+	var maj = /[A-Z]/
+	if (ente[1] === undefined || ente[1] === '' || ente[1].length > 10) {
+		req.flash('error', 'Code invalide.')
+		res.redirect('/forgot')
+	}
+	else if (req.body.passwd === undefined || req.body.passwd === '' || req.body.passwd.length > 30) {
+		req.flash('error', 'erreur passord.')
+		res.redirect('/forgot')
+	}
+	else if (!num.test(req.body.passwd) || !min.test(req.body.passwd) || !maj.test(req.body.passwd) || req.body.passwd < 8)
+	{
+		req.flash('error', 'mot de passe trop simple.')
+		res.redirect('/resetmdp?code=' + ente[1])
+	}
+	else {
+		var auth = require('../modele/auth.js')
+		auth.getcode(ente[1], (rows) => {
+			if (rows[0]) {
+				bcrypt.hash(req.body.passwd, 10, (err, hash) => {
+					auth.uppasswd(hash, rows[0].id_user)
+					req.flash('succes', 'Mot de passe modifie.')
+					res.redirect('/login')
+				})
+			auth.delcode(ente[1])
+			}
+			else {
+				req.flash('error', 'Code invalide.')
+				res.redirect('/forgot')
+			}
+		})
+	}
+}
 
 exports.resetmdp = (req, res) => {
-	 
-	 sendmail({
-		from: 'vgui@localhost.com',
-		to: 'v.guillemer@gmail.com',
-		subject: 'test sendmail',
-		html: 'Mail of test sendmail ',
-	}, function(err, reply) {
-		console.log(err && err.stack);
-		console.dir(reply);
-	});
-		res.redirect('/')
+	var ente = req.originalUrl.split('?')
+	if (ente[1] === undefined || ente[1] === '') {
+		req.flash('error', 'Code invalide.')
+		res.redirect('/forgot')
+	}
+	else {
+		res.locals.code = ente[1]
+		res.render('auth/resetmdp')
+	}
+}
+
+exports.forgot = (req, res) => {
+	if (req.body.fmail === undefined || req.body.fmail === '') {
+		req.flash('error', 'Mail invalide.')
+		res.redirect('/forgot')
+	}
+	else {
+		var auth = require('../modele/auth.js')
+
+		auth.getmail(req.body.fmail, (rows) => {
+			if (rows[0])  {
+				req.flash('succes', 'Mail envoye')
+				auth.rm_forgot(rows[0].id)
+				var code = rows[0].id.toString()
+				var i = 0
+				var tab = "abcdefghijklmnopkrstuvwxyz1234567890"
+				while (i < 10)
+				{
+					var t = Math.floor(Math.random() * (36 - 1) + 1);
+					code = code + tab[t]
+					i++
+				}
+				auth.insert_forgot(rows[0].id, code)
+				var transporter = nodemailer.createTransport({
+				  service: 'gmail',
+					auth: {
+						user: 'v.matcha42@gmail.com',
+						pass: '111111qQ'
+					}
+				});
+				var message = 'pour reinitialiser votre mot de passe, cliquez sur le lien suivant: http://5.196.225.53:8100/resetmdp?code=' + code
+				var mailOptions = {
+					from: 'v.matcha42@gmail.com',
+					to: req.body.fmail,
+					subject: 'Reset mdp matcha',
+					text: message
+				};
+				transporter.sendMail(mailOptions, (error, info) => {
+					if (error) {
+						throw error
+					}
+				}); 
+				res.redirect('/login')
+			}
+			else {
+				req.flash('error', 'Mail invalide.')
+				res.redirect('/login')
+			}
+		})
+	}
 }
 
 exports.login = (req, res) => {
@@ -142,7 +229,6 @@ exports.compte = (req, res) => {
 		mail = req.body.cmail
 	if (!re.test(mail))
 	{
-		console.log(mail)
 		req.flash('error', 'Email non valide.')
 		res.redirect('/compte')
 	}
@@ -171,10 +257,6 @@ exports.compte = (req, res) => {
 		req.flash('succes', 'Compte modifie.')
 		res.render('auth/compte')
 	}
-}
-
-exports.forgot = (req, res) => {
-	res.render('auth/forgot')
 }
 
 exports.home = (req, res) => {

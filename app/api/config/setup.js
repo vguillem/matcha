@@ -23,6 +23,12 @@ bdd.connect((err) => {
 		console.log('table users ok');
 	});
 
+	bdd.query("CREATE TABLE IF NOT EXISTS rmdp (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, code VARCHAR(255) UNIQUE, id_user INT UNSIGNED UNIQUE, INDEX r_id_user (id_user), FOREIGN KEY (id_user) REFERENCES users(id))", (err, result) => {
+		if (err) throw err;
+		console.log('table rmdp ok');
+	});
+
+
 	bdd.query("CREATE TABLE IF NOT EXISTS profil (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, pop INT UNSIGNED DEFAULT '0', img_profil INT UNSIGNED DEFAULT '0', geolocalise INT UNSIGNED DEFAULT '0', id_user INT UNSIGNED, genre INT(2), orientation INT(3), bio TEXT, age INT UNSIGNED, ville VARCHAR(255), lat DECIMAL(10, 8), lng DECIMAL(10, 8), INDEX c_id_user (id_user), FOREIGN KEY (id_user) REFERENCES users(id))", (err, result) => {
 		if (err) throw err;
 		console.log('table profil ok');

@@ -16,6 +16,30 @@ class Auth {
 		bdd.query(mysql.format(sql, inserts))
 	}
 
+
+	static delcode (code) {
+		var sql = "DELETE FROm rmdp WHERE code = ?"
+		var inserts = [code]
+		bdd.query(mysql.format(sql, inserts))
+	}
+
+
+	static uppasswd (passwd, id) {
+		var sql = "UPDATE users SET passwd= ? WHERE id = ?"
+		var inserts = [passwd, id]
+		bdd.query(mysql.format(sql, inserts))
+	}
+
+	static getcode (code, cb) {
+		var sql = "SELECT * FROM rmdp WHERE code= ? LIMIT 1"
+		var inserts = [code]
+		bdd.query(mysql.format(sql, inserts), (err, rows) => {
+			if (err) throw err
+			cb(rows)
+		})
+	}
+
+
 	static login (login, cb) {
 		var sql = "SELECT * FROM users WHERE login= ? LIMIT 1"
 		var inserts = [login]
@@ -32,6 +56,20 @@ class Auth {
 			if (err) throw err
 			cb(rows)
 		})
+	}
+
+
+	static insert_forgot (id, code) {
+		var sql = "INSERT INTO rmdp SET id_user= ?, code= ?"
+		var inserts = [id, code]
+		bdd.query(mysql.format(sql, inserts))
+	}
+
+
+	static rm_forgot (id) {
+		var sql = "DELETE FROM rmdp WHERE id_user= ?"
+		var inserts = [id]
+		bdd.query(mysql.format(sql, inserts))
 	}
 
 	static iploc (id, ville, lat, lng) {

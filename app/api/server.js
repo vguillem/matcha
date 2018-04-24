@@ -88,6 +88,7 @@ app.post('/compte', (req, res) => {
 app.get('/forgot', (req, res) => {
 	res.render('auth/forgot')
 })
+
 app.post('/forgot', (req, res) => {
 	Auth.forgot(req, res)
 })
@@ -133,10 +134,14 @@ app.get('/chat', (req, res) => {
 })
 
 
-app.post('/resetmdp', (req, res) => {
+app.get('/resetmdp', (req, res) => {
 	Auth.resetmdp(req, res)
 })
 
+
+app.post('/resetmdp', (req, res) => {
+	Auth.resetmdppost(req, res)
+})
 
 app.use((req, res, next) => {
 	res.status(404).render('404')
