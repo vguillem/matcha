@@ -11,7 +11,7 @@
 					 <% } else { %>
 					 <a href="/user?id=<%= tmp.uid%>"><img src="upload/noprofil.png" class="img-thumbnail profil float-left ml-1 mr-1" alt="Photo profil"></a>
 					 <% } %>
-	 <p><%= tmp.login%><br/>
+	 <p><span id='login'><%= tmp.login%></span><br/>
 	 <%= tmp.firstname%><br/>
 	 <%= tmp.lastname%><br/>
 	 membre depuis : <%= tmp.inscription%><br/>
@@ -37,6 +37,8 @@
 		<a href="/like/<%= tmp.uid%>" class='badge badge-primary'>Matcher</a>
 	 <% }%>
 				</div>
+			<a href="/addblist/<%= tmp.uid%>" class='badge badge-primary'>Bloquer</a>
+			<a href="/report/<%= tmp.uid%>" class='badge badge-primary'>Reporter faux compte</a>
 			</div>
 			<div class='row'>
 					<span class='bg-light col-12'><%= tmp.bio%></span>
@@ -50,4 +52,43 @@
 	<%})}%>
 	</div>
 </form>
+<%if (locals.chat && locals.chat[0]) {%>
+<div class='container'>
+	<form action=''>
+	<div class='card offset-md-1 col-md-9'>
+		<div class="card-header">Message</div>
+		<ul id='message' class='card-body'>
+		<%locals.chat.forEach(function(chatmes){%>
+			<li><%=chatmes.login_posteur%> : <%=chatmes.message%></li>
+		<%})%>
+		</ul>
+	</div>
+	<div class='row'>
+		<input id='m' class="offset-1 col-md-9"/><button>Envoyer</button>
+		</div>
+	</form>
+</div>
+<script>
+	$('#message').scrollTop(1E10)
+	$(function() {
+		var socketio = io.connect()
+		$('form').submit(function() {
+			var msg = {
+				"user" : $('#login').text(),
+				"data" : $('#m').val()
+			}
+			socketio.emit('chat message', msg)
+			$('#message').append($('<li>').text('Vous : ' + msg.data))
+			$('#message').scrollTop(1E10)
+			$('#m').val('')
+			return false
+		})
+		socketio.on('chat message', function(msg) {
+			if (msg.user === $('#login').text())
+				$('#message').append($('<li>').text(msg.user + ' : ' + msg.data))
+				$('#message').scrollTop(1E10)
+		})
+	})
+</script>
+<%}%>
 <% include ../footer %>

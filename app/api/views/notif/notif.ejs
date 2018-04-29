@@ -1,0 +1,16 @@
+<% include ../header %>
+
+<form class='containers offset-1 col-10'>
+	<div class='row'>
+		<% if (locals.notif) {locals.notif.forEach(function(tmp) {%>
+		<div class='ml-2 ml-lg-5 mr-5 col-lg-3 border border-dark mb-5'>
+			<div class='row'>
+				<div class=' col-12'>
+		<a href="/user/<%= tmp.id_notifieur%>" class='badge badge-primary'><%=tmp.login%></a><%=tmp.action%> le <%=tmp.heure%>
+			</div>
+			</div>
+			</div>
+	<%})}%>
+	</div>
+</form>
+<% include ../footer %>

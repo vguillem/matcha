@@ -1,24 +1,52 @@
 var fs = require('fs')
 var getCoords = require ('city-to-coords')
+var readchunk = require('read-chunk')
+var isPng = require('is-png')
 
 exports.unlike = (req, res) => {
 	var hist = require('../modele/hist.js')
 	var pro = require('../modele/profil.js')
+	var notif = require('../modele/notif.js')
 	pro.unlike(req.session.user.id, req.params.id)
 	hist.unlike(req.session.user.id, req.params.id)
-	res.redirect('/sall')
+	pro.getlike(req.session.user.id, req.params.id, (rows) => {
+		if (rows[0])
+			notif.munlike(req.session.user.id, req.params.id)
+		else
+			notif.unlike(req.session.user.id, req.params.id)
+	
+		res.redirect('/sall')
+	})
 }
 
 
 exports.like = (req, res) => {
 	var pro = require('../modele/profil.js')
 	var hist = require('../modele/hist.js')
+	var notif = require('../modele/notif.js')
 	pro.unlike(req.session.user.id, req.params.id)
 	pro.like(req.session.user.id, req.params.id)
 	hist.like(req.session.user.id, req.params.id)
-	res.redirect('/sall')
+	pro.getlike(req.session.user.id, req.params.id, (rows) => {
+		if (rows[0])
+			notif.mlike(req.session.user.id, req.params.id)
+		else
+			notif.like(req.session.user.id, req.params.id)
+	
+		res.redirect('/sall')
+	})
 }
 
+
+
+exports.getnotif = (req, res) => {
+	var notif = require('../modele/notif.js')
+	notif.getnotif(req.session.user.id, (rows) => {
+		if (rows[0])
+			res.locals.notif = rows
+		res.render('notif/notif')
+	})
+}
 
 
 exports.localisation = (req, res) => {
@@ -88,33 +116,64 @@ exports.addtag = (req, res) => {
 	res.redirect('/profil')
 }
 
-//proteger bad upload
 exports.upload = (req, res) => {
 	var fstream
 	var pro = require('../modele/profil.js')
 	req.pipe(req.busboy)
+	var promises = []
+	var allimgok = 1
 	req.busboy.on('file', (fieldname, file, filename) => {
-		if (filename !== '') {
-			req.flash('succes', 'Photo uplode')
-			if (fieldname === 'img1')
-			{
-				pro.img_profil_ok(req.session.user.id)
-				fstream = fs.createWriteStream(__dirname + '/../public/upload/' + req.session.user.id + '-1.png')
+		var promise = new Promise((resolve) => {
+			if (filename !== '') {
+				var pathimg = __dirname + '/../public/upload/' + req.session.user.id
+				var finimg = false
+				if (fieldname === 'img1')
+					finimg = '-1.png'
+				else if (fieldname === 'img2')
+					finimg = '-2.png'
+				else if (fieldname === 'img3')
+					finimg = '-3.png'
+				else if (fieldname === 'img4')
+					finimg = '-4.png'
+				else if (fieldname === 'img5')
+					finimg = '-5.png'
+				if (finimg) {
+					fstream = fs.createWriteStream(pathimg + finimg)
+					file.pipe(fstream)
+					fstream.on('close', () => {
+						var type = readchunk.sync(pathimg + finimg, 0, 8)
+						if (!isPng(type))
+						{
+							allimgok = 2
+							fs.unlink(pathimg + finimg, (err) => {
+								resolve('erreur')
+								if (err) throw err
+							})
+						}
+						else {
+							if (finimg === '-1.png')
+								pro.img_profil_ok(req.session.user.id)
+							resolve('ok')
+						}
+					})
+				}
+				else
+				{
+					allimgok = 2
+					resolve('erreur')
+				}
 			}
-			else if (fieldname === 'img2')
-				fstream = fs.createWriteStream(__dirname + '/../public/upload/' + req.session.user.id + '-2.png')
-			else if (fieldname === 'img3')
-				fstream = fs.createWriteStream(__dirname + '/../public/upload/' + req.session.user.id + '-3.png')
-			else if (fieldname === 'img4')
-				fstream = fs.createWriteStream(__dirname + '/../public/upload/' + req.session.user.id + '-4.png')
-			else if (fieldname === 'img5')
-				fstream = fs.createWriteStream(__dirname + '/../public/upload/' + req.session.user.id + '-5.png')
-			file.pipe(fstream)
-			fstream.on('close', () => {
-			})
-		}
+			promises.push(promise);
+		})
 	})
-	res.redirect('/profil')
+	Promise.all(promises)
+		.then(uplo => {
+			if (allimgok === 1)
+				req.flash('succes', 'Photo uplode')
+			else
+				req.flash('error', 'fichier invalide')
+			res.redirect('/profil')
+		})
 }
 
 exports.profil = (req, res) => {

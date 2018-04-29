@@ -1,19 +1,20 @@
 <% include ../header %>
 <form class='containers offset-2 col-8' method='post' action='/compte' >
+  <div class='titre'><h4>Modifier vos informations</h4></div>
   <div class="form-row">
     <div class="form-group col-md-6">
       <label for='cfirstname'>Prénom</label>
-      <input type="text" class="form-control" id='cfirstname' name='cfirstname' placeholder="Prénom">
+      <input type="text" class="form-control" id='cfirstname' name='cfirstname' placeholder="Prénom" value='<% if (locals.firstname){%><%=locals.firstname%><%}%>'>
     </div>
     <div class="form-group col-md-6">
       <label for="clastname">Nom</label>
-      <input type="text" class="form-control" id='clastname' name='clastname' placeholder="Nom">
+      <input type="text" class="form-control" id='clastname' name='clastname' placeholder="Nom" value='<% if (locals.lastname){%><%=locals.lastname%><%}%>'>
     </div>
   </div>
   <div class="form-row">
     <div class="form-group col-md-6">
       <label for='cemail'>Email</label>
-      <input type="email" class="form-control" id='cemail' name='cmail' placeholder="Email">
+      <input type="email" class="form-control" id='cemail' name='cemail' placeholder="Email" value='<% if (locals.mail){%><%=locals.mail%><%}%>'>
     </div>
     <div class="form-group col-md-6">
       <label for="cpasswd">Password (8 min)</label>

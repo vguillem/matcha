@@ -1,36 +1,44 @@
 var bcrypt = require('bcrypt')
 var iploc = require('iplocation')
 var nodemailer = require('nodemailer');
+function verif(data, type, len){
+	if (data === undefined || data === '' || (data.length > len && len !== 0))
+		return false
+	if (type === 1) {
+		if (!Number.isInteger(data))
+			return false
+	}
+	return true
+}
 
 exports.resetmdppost = (req, res) => {
-	var ente = req.originalUrl.split('?')
-	ente = ente[1].split('=')
+	var ente = req.query.code
 	var num = /[0-9]/
 	var min = /[a-z]/
 	var maj = /[A-Z]/
-	if (ente[1] === undefined || ente[1] === '' || ente[1].length > 10) {
+	if (!verif(ente, 0, 20)) {
 		req.flash('error', 'Code invalide.')
 		res.redirect('/forgot')
 	}
-	else if (req.body.passwd === undefined || req.body.passwd === '' || req.body.passwd.length > 30) {
-		req.flash('error', 'erreur passord.')
+	else if (!verif(req.body.passwd, 0, 30)) {
+		req.flash('error', 'erreur password.')
 		res.redirect('/forgot')
 	}
 	else if (!num.test(req.body.passwd) || !min.test(req.body.passwd) || !maj.test(req.body.passwd) || req.body.passwd < 8)
 	{
 		req.flash('error', 'mot de passe trop simple.')
-		res.redirect('/resetmdp?code=' + ente[1])
+		res.redirect('/resetmdp?code=' + ente)
 	}
 	else {
 		var auth = require('../modele/auth.js')
-		auth.getcode(ente[1], (rows) => {
+		auth.getcode(ente, (rows) => {
 			if (rows[0]) {
 				bcrypt.hash(req.body.passwd, 10, (err, hash) => {
 					auth.uppasswd(hash, rows[0].id_user)
 					req.flash('succes', 'Mot de passe modifie.')
 					res.redirect('/login')
 				})
-			auth.delcode(ente[1])
+			auth.delcode(ente)
 			}
 			else {
 				req.flash('error', 'Code invalide.')
@@ -41,19 +49,19 @@ exports.resetmdppost = (req, res) => {
 }
 
 exports.resetmdp = (req, res) => {
-	var ente = req.originalUrl.split('?')
-	if (ente[1] === undefined || ente[1] === '') {
+	var ente = req.query.code
+	if (!verif(ente, 0, 20)) {
 		req.flash('error', 'Code invalide.')
 		res.redirect('/forgot')
 	}
 	else {
-		res.locals.code = ente[1]
+		res.locals.code = ente
 		res.render('auth/resetmdp')
 	}
 }
 
 exports.forgot = (req, res) => {
-	if (req.body.fmail === undefined || req.body.fmail === '') {
+	if (!verif(ente, 0, 250)) {
 		req.flash('error', 'Mail invalide.')
 		res.redirect('/forgot')
 	}
@@ -217,22 +225,22 @@ exports.create = (req, res) => {
 exports.compte = (req, res) => {
 	var auth = require('../modele/auth.js')
 	var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-	var fistname = req.session.user.firstname
+	var firstname = req.session.user.firstname
 	var lastname = req.session.user.lastname
 	var pass = req.session.user.passwd
 	var mail = req.session.user.mail
-	if (req.body.clastname !== undefined && req.body.clastname !== '')
+	if (verif(req.body.clastname, 0, 250))
 		lastname = req.body.clastname
-	if (req.body.cfirstname !== undefined && req.body.cfirstname !== '')
+	if (verif(req.body.cfirstname, 0, 250))
 		firstname = req.body.cfirstname
-	if (req.body.cmail !== undefined && req.body.cmail !== '')
-		mail = req.body.cmail
+	if (verif(req.body.cemail, 0, 250))
+		mail = req.body.cemail
 	if (!re.test(mail))
 	{
 		req.flash('error', 'Email non valide.')
 		res.redirect('/compte')
 	}
-	else if (req.body.cpasswd !== undefined && req.body.cpasswd !== '')
+	else if (verif(req.body.cpasswd, 0, 50))
 	{
 		var num = /[0-9]/
 		var min = /[a-z]/
@@ -240,10 +248,14 @@ exports.compte = (req, res) => {
 		if (num.test(req.body.cpasswd) && min.test(req.body.cpasswd) && maj.test(req.body.cpasswd) && req.body.cpasswd.length > 7)
 		{
 			bcrypt.hash(req.body.cpasswd, 10, (err, hash) => {
-				auth.compte(req.session.user.id, req.body.cfirstname, req.body.clastname, req.body.cmail, hash)
+				auth.compte(req.session.user.id, firstname, lastname, mail, hash)
+				req.session.user.lastname = lastname
+				req.session.user.firstname = firstname
+				req.session.user.mail = mail
+				req.session.user.passwd = hash
 				req.flash('succes', 'Compte modifie.')
+				res.redirect('/sall')
 			})
-			res.redirect('/')
 		}
 		else
 		{
@@ -253,11 +265,22 @@ exports.compte = (req, res) => {
 	}
 	else
 	{
+		req.session.user.lastname = lastname
+		req.session.user.firstname = firstname
+		req.session.user.mail = mail
 		auth.compte(req.session.user.id, firstname, lastname, mail, pass)
 		req.flash('succes', 'Compte modifie.')
-		res.render('auth/compte')
+		res.redirect('/sall')
 	}
 }
+
+exports.compteget = (req, res) => {
+	res.locals.firstname = req.session.user.firstname
+	res.locals.lastname = req.session.user.lastname
+	res.locals.mail = req.session.user.mail
+	res.render('auth/compte')
+}
+
 
 exports.home = (req, res) => {
 	res.render('index')

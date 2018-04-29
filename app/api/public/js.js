@@ -1,8 +1,26 @@
-if (navigator.geolocation) {
+//<span class="badge badge-success">Success</span>
+window.onload= function(){
+	$('#foo').click(function() {
+	  alert('User clicked on "foo."');
+	  });
+};
+
+	$(function() {
+		var socket = io.connect()
+		socket.on('notif', function(notif) {
+			console.log(notif)
+			//$('#notif').text(notif)
+		})
+	})
+
+
+
+
+/*if (navigator.geolocation) {
 	navigator.geolocation.getCurrentPosition(function (pos) {
 		console.log(pos)
 	})
-}
+}*/
 
 
 

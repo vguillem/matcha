@@ -21,6 +21,41 @@ class Profil {
 		})
 	}
 
+	static addblist (bloqueur, bloque) {
+		var sql = "INSERT INTO blist SET id_bloqueur= ?, id_bloque= ?"
+		var inserts = [bloqueur, bloque]
+		bdd.query(mysql.format(sql, inserts))
+	}
+
+
+	static dellblist (bloqueur, bloque) {
+		var sql = "DELETE FROM blist where id_bloqueur= ? AND id_bloque= ?"
+		var inserts = [bloqueur, bloque]
+		bdd.query(mysql.format(sql, inserts))
+	}
+
+
+	static getblist (bloqueur, cb) {
+		var sql = "SELECT blist.*, users.login AS login FROM blist LEFT JOIN users ON blist.id_bloque = users.id where id_bloqueur= ?"
+		var inserts = [bloqueur]
+		bdd.query(mysql.format(sql, inserts), (err, rows) => {
+			if (err) throw err
+			cb(rows)
+		})
+	}
+
+
+
+	static getlike (likeur, liker, cb) {
+		var sql = "SELECT * FROM tlike WHERE id_likeur= ? AND id_liker= ?"
+		var inserts = [liker, likeur]
+		bdd.query(mysql.format(sql, inserts), (err, rows) => {
+			if (err) throw err
+			cb(rows)
+		})
+	}
+
+
 	static like (likeur, liker) {
 		var sql = "INSERT INTO tlike SET id_likeur= ?, id_liker= ?"
 		var inserts = [likeur, liker]
@@ -63,7 +98,7 @@ class Profil {
 
 
 	static getprofil (id, cb) {
-		var sql = "SELECT * FROM profil WHERE id_user= ? LIMIT 1"
+		var sql = "SELECT profil.*, GROUP_CONCAT(join_tag.id_tag) AS idtag FROM profil LEFT JOIN join_tag ON join_tag.id_user=profil.id_user WHERE profil.id_user= ? LIMIT 1"
 		var inserts = [id]
 		bdd.query(mysql.format(sql, inserts), (err, rows) => {
 			if (err) throw err
@@ -107,6 +142,15 @@ class Profil {
 			}
 		})
 	}
+
+	static searchtag (cb) {
+		var sql = "SELECT * FROM tag"
+		bdd.query(sql, (err, rows) => {
+			if (err) throw err
+			cb(rows)
+		})
+	}
+
 
 	static selecttag (id, cb) {
 		var sql = "SELECT tag.tag AS tag FROM join_tag JOIN tag ON join_tag.id_user = ? AND tag.id=id_tag"

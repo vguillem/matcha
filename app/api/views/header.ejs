@@ -8,6 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="bootstrap/js/bootstrap.min.js"></script>
+  <script src="/socket.io-client/dist/socket.io.js"></script>
   <script src="js.js"></script>
 
 </head>
@@ -29,9 +30,20 @@
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" href="/compte"><img src='./glyphicons_free/glyphicons/png/glyphicons-4-user.png' class='icons'></span>Mon compte</a>
           <a class="dropdown-item" href="/profil"><img src='./glyphicons_free/glyphicons/png/glyphicons-30-notes-2.png' class='icons'>Mon Profil</a>
+          <a class="dropdown-item" href="/blist"><img src='./glyphicons_free/glyphicons/png/glyphicons-193-remove-sign.png' class='icons'>Blacklist</a>
+          <a class="dropdown-item" href="/notif"><img src='./glyphicons_free/glyphicons/png/glyphicons-747-pending-notifications.png' class='icons'>Notifications</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="/logout"><img src='./glyphicons_free/glyphicons/png/glyphicons-388-log-out.png' class='icons'>logout</a>
         </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/sall"><img src='./glyphicons_free/glyphicons/png/glyphicons-28-search.png' class='icons'>Rechercher</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/chat"><img src='./glyphicons_free/glyphicons/png/glyphicons-123-message-in.png' class='icons'>Chat</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/notif"><img src='./glyphicons_free/glyphicons/png/glyphicons-747-pending-notifications.png' class='icons'>Notifications <span id='notif' class='badge badge-success'><%if (locals.nbnotif){%><%=locals.nbnotif%><% }else{%>0<%}%></span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/logout"><img src='./glyphicons_free/glyphicons/png/glyphicons-388-log-out.png' class='icons'>Deconnexion</a>

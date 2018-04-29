@@ -4,14 +4,14 @@ var bdd = require('../config/database')
 class Hist {
 
 	static like (id_visiteur, id_visite) {
-		var sql = "INSERT INTO history SET id_visiteur= ?, id_visite= ?, action='a arrete de vous matche', heure=NOW()"
+		var sql = "INSERT INTO history SET id_visiteur= ?, id_visite= ?, action='vous a matche', heure=NOW()"
 		var inserts = [id_visiteur, id_visite]
 		bdd.query(mysql.format(sql, inserts))
 	}
 
 
 	static unlike (id_visiteur, id_visite) {
-		var sql = "INSERT INTO history SET id_visiteur= ?, id_visite= ?, action='vous a matche', heure=NOW()"
+		var sql = "INSERT INTO history SET id_visiteur= ?, id_visite= ?, action='a arrete de vous matche', heure=NOW()"
 		var inserts = [id_visiteur, id_visite]
 		bdd.query(mysql.format(sql, inserts))
 	}
@@ -25,8 +25,8 @@ class Hist {
 
 
 	static get_hist (id, cb) {
-		var sql = "SELECT history.action AS action, history.id_visiteur AS visiteur, DATE_FORMAT(history.heure, '%d/%m/%Y a %h:%i') AS heure, users.login AS login FROM history LEFT JOIN users ON users.id = history.id_visiteur WHERE id_visite=? ORDER BY history.id DESC"
-		var inserts = [id]
+		var sql = "SELECT history.action AS action, history.id_visiteur AS visiteur, DATE_FORMAT(history.heure, '%d/%m/%Y a %h:%i') AS heure, users.login AS login FROM history LEFT JOIN users ON users.id = history.id_visiteur LEFT JOIN blist ON blist.id_bloqueur= ? AND blist.id_bloque=history.id_visiteur WHERE id_visite=? AND blist.id IS NULL ORDER BY history.id DESC"
+		var inserts = [id, id]
 		bdd.query(mysql.format(sql, inserts), (err, rows) => {
 			if (err) throw err
 			cb(rows)

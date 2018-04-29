@@ -1,0 +1,16 @@
+<% include ../header %>
+
+<form class='containers offset-1 col-10'>
+	<div class='row'>
+		<% if (locals.blist) {locals.blist.forEach(function(tmp) {%>
+		<div class='ml-2 ml-lg-5 mr-5 col-lg-3 border border-dark mb-5'>
+			<div class='row'>
+				<div class=' col-12'>
+		<%=tmp.login%><a href="/dellblist/<%= tmp.id_bloque%>" class='badge badge-primary'>Debloquer</a>
+			</div>
+			</div>
+			</div>
+	<%})}%>
+	</div>
+</form>
+<% include ../footer %>

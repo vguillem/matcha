@@ -61,6 +61,7 @@ display: block;
 
 #message {
 	height: 300px;
+	overflow: scroll;
 }
 
 .icons {
@@ -96,7 +97,7 @@ button {
 
 .titre {
 	text-align:center;
-	color: rgb(160, 211, 248);
+	color: rgb(102, 140, 255);
 	font-size:30px;
 	font-style: oblique;
 	text-decoration: underline;

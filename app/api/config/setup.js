@@ -29,7 +29,7 @@ bdd.connect((err) => {
 	});
 
 
-	bdd.query("CREATE TABLE IF NOT EXISTS profil (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, pop INT UNSIGNED DEFAULT '0', img_profil INT UNSIGNED DEFAULT '0', geolocalise INT UNSIGNED DEFAULT '0', id_user INT UNSIGNED, genre INT(2), orientation INT(3), bio TEXT, age INT UNSIGNED, ville VARCHAR(255), lat DECIMAL(10, 8), lng DECIMAL(10, 8), INDEX c_id_user (id_user), FOREIGN KEY (id_user) REFERENCES users(id))", (err, result) => {
+	bdd.query("CREATE TABLE IF NOT EXISTS profil (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, pop INT UNSIGNED DEFAULT '0', img_profil INT UNSIGNED DEFAULT '0', geolocalise INT UNSIGNED DEFAULT '0', id_user INT UNSIGNED, genre INT(2), orientation INT(3), bio TEXT, age INT UNSIGNED, ville VARCHAR(255), lat DECIMAL(12, 8), lng DECIMAL(12, 8), INDEX c_id_user (id_user), FOREIGN KEY (id_user) REFERENCES users(id))", (err, result) => {
 		if (err) throw err;
 		console.log('table profil ok');
 	});
@@ -46,11 +46,28 @@ bdd.connect((err) => {
 
 	bdd.query("CREATE TABLE IF NOT EXISTS tlike (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, id_likeur INT UNSIGNED, id_liker INT UNSIGNED, INDEX c_id_likeur (id_likeur), FOREIGN KEY (id_likeur) REFERENCES users(id), INDEX c_id_liker (id_liker), FOREIGN KEY (id_liker) REFERENCES users(id))", (err, result) => {
 		if (err) throw err;
-		console.log('table join_tag ok');
+		console.log('table tlike ok');
+	});
+
+
+	bdd.query("CREATE TABLE IF NOT EXISTS blist (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, id_bloqueur INT UNSIGNED, id_bloque INT UNSIGNED, INDEX c_id_bloqueur (id_bloqueur), FOREIGN KEY (id_bloqueur) REFERENCES users(id), INDEX c_id_bloque (id_bloque), FOREIGN KEY (id_bloque) REFERENCES users(id))", (err, result) => {
+		if (err) throw err;
+		console.log('table blist ok');
 	});
 
 	bdd.query("CREATE TABLE IF NOT EXISTS history (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, action VARCHAR(255), id_visiteur INT UNSIGNED, id_visite INT UNSIGNED, heure DATETIME, INDEX c_id_visiteur (id_visiteur), FOREIGN KEY (id_visiteur) REFERENCES users(id), INDEX c_id_visite (id_visite), FOREIGN KEY (id_visite) REFERENCES users(id))", (err, result) => {
 		if (err) throw err;
 		console.log('table history ok');
+	});
+
+
+	bdd.query("CREATE TABLE IF NOT EXISTS chat (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, message VARCHAR(255), login_posteur  VARCHAR(255), login_destinataire VARCHAR(255), heure DATETIME, INDEX c_login_posteur (login_posteur), FOREIGN KEY (login_posteur) REFERENCES users(login), INDEX c_login_destinataire (login_destinataire), FOREIGN KEY (login_destinataire) REFERENCES users(login))", (err, result) => {
+		if (err) throw err;
+		console.log('table chat ok');
+	});
+
+	bdd.query("CREATE TABLE IF NOT EXISTS notif (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, action VARCHAR(255), id_notifieur INT UNSIGNED, id_notifie INT UNSIGNED, heure DATETIME, vu INT UNSIGNED DEFAULT '0', INDEX c_id_notifieur (id_notifieur), FOREIGN KEY (id_notifieur) REFERENCES users(id), INDEX c_id_notifie (id_notifie), FOREIGN KEY (id_notifie) REFERENCES users(id))", (err, result) => {
+		if (err) throw err;
+		console.log('table notif ok');
 	});
 });

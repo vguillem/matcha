@@ -17,10 +17,13 @@
     "ejs": "^2.5.7",
     "express": "^4.16.2",
     "express-session": "^1.15.6",
+    "express-socket.io-session": "^1.3.3",
     "iplocation": "^5.0.0",
+    "is-png": "^1.1.0",
     "mysql": "^2.15.0",
     "nodemailer": "^4.6.4",
     "nodemon": "^1.17.3",
+    "read-chunk": "^2.1.0",
     "socket.io": "^2.0.4"
   }
 }
