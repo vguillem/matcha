@@ -34,7 +34,7 @@ data.forEach((tmp) => {
 })
 
 var i = 1
-while (i < 751)
+while (i < 801)
 {
 	var k = 0
 	var t = Math.floor(Math.random() * (7 - 1) + 1);

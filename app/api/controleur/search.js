@@ -177,23 +177,24 @@ exports.user = (req, res) => {
 		{
 			if (res.locals.profil)
 			{
-				search.user(rows[0].lng, rows[0].lat, id, (rows) => {
-					if (rows[0]) {
-						chat.getchat(req.session.user.login, rows[0].login, req.session.user.id, id, (rows2) => {
+				search.user(rows[0].lng, rows[0].lat, id, req.session.user.id, (rows3) => {
+					if (rows3[0]) {
+						console.log(rows3)
+						chat.getchat(req.session.user.login, rows3[0].login, req.session.user.id, id, (rows2) => {
 							var i = 0
 							while (rows2[i]) {
 								if (rows2[i].login_posteur === req.session.user.login)
-									rows2[i].login_posteur = 'vous'
+									rows2[i].login_posteur = 'Vous'
 								i++
 							}
-							res.locals.chat = rows2
-							hist.v_user(req.session.user.id, rows[0].uid)
-							notif.v_user(req.session.user.id, rows[0].uid)
-							if (rows[0].tag)
-								rows[0].tags = rows[0].tag.split(',')
+							res.locals.chat = rows2.reverse()
+							hist.v_user(req.session.user.id, rows3[0].uid)
+							notif.v_user(req.session.user.id, rows3[0].uid)
+							if (rows3[0].tag)
+								rows3[0].tags = rows3[0].tag.split(',')
 							else
-								rows[0].tags = 0
-							res.locals.users = rows
+								rows3[0].tags = 0
+							res.locals.users = rows3
 							res.render('search/user')
 						})
 					}

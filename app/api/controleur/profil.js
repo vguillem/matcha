@@ -15,7 +15,7 @@ exports.unlike = (req, res) => {
 		else
 			notif.unlike(req.session.user.id, req.params.id)
 	
-		res.redirect('/sall')
+		res.redirect(req.session.lastpage)
 	})
 }
 
@@ -33,7 +33,7 @@ exports.like = (req, res) => {
 		else
 			notif.like(req.session.user.id, req.params.id)
 	
-		res.redirect('/sall')
+		res.redirect(req.session.lastpage)
 	})
 }
 

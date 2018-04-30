@@ -1,6 +1,6 @@
 var mysql = require('mysql');
 var bdd = require('../config/database')
-var sel = "SELECT users.id AS uid, GROUP_CONCAT(tag.id) AS idtag, GROUP_CONCAT(tag.tag) AS tag, users.login AS login, profil.genre AS genre, profil.age AS age, profil.bio AS bio, DATE_FORMAT(users.lastco, '%d %m %Y %H:%i') AS lastco, (NOW() - users.lastco) AS tlastco, users.firstname AS firstname, users.lastname AS lastname, DATE_FORMAT(users.date, '%d %M %Y') AS inscription, profil.orientation AS orientation, profil.img_profil AS img_profil, tlike.id AS tlikeid, profil.ville AS ville, ROUND(ST_Distance_Sphere(point(?, ?), point(profil.lng, profil.lat)) / 1000) AS distance"
+var sel = "SELECT users.id AS uid, GROUP_CONCAT(tag.id) AS idtag, GROUP_CONCAT(tag.tag) AS tag, users.login AS login, profil.genre AS genre, profil.age AS age, profil.bio AS bio, DATE_FORMAT(users.lastco, '%d/%m/%Y %Hh%i') AS lastco, (NOW() - users.lastco) AS tlastco, users.firstname AS firstname, users.lastname AS lastname, DATE_FORMAT(users.date, '%d/%m/%Y') AS inscription, profil.orientation AS orientation, profil.img_profil AS img_profil,profil.p_profil AS p_profil, tlike.id AS tlikeid, profil.ville AS ville, ROUND(ST_Distance_Sphere(point(?, ?), point(profil.lng, profil.lat)) / 1000) AS distance"
 
 class Search {
 
@@ -52,7 +52,7 @@ class Search {
 	}
 
 
-	static  user (lng, lat, id, cb) {
+	static  user (lng, lat, id, reqid, cb) {
 		var sql = sel + "\
 		FROM users\
 		LEFT JOIN profil\
@@ -65,7 +65,7 @@ class Search {
 		ON tlike.id_liker = profil.id_user AND tlike.id_likeur = ?\
 		WHERE users.id= ?\
 		GROUP BY users.id"
-		var inserts = [lng, lat, id, id]
+		var inserts = [lng, lat, reqid, id]
 		bdd.query(mysql.format(sql, inserts), (err, rows) => {
 			if (err) throw err
 			cb(rows)

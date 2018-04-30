@@ -1,4 +1,6 @@
 var getCoords = require ('city-to-coords')
+var faker = require('faker')
+faker.locale='fr'
 var mysql = require('mysql');
 var bdd = require('../config/database')
 var data = [
@@ -751,12 +753,62 @@ var data = [
 	{"id_user": 747, "pop": 125, "genre": 2, "orientation": 1, "bio": "vel, vulputate eu, odio. Phasellus at augue id ante dictum cursus. Nunc mauris elit, dictum eu, eleifend nec,", "age": 93},
 	{"id_user": 748, "pop": 131, "genre": 1, "orientation": 2, "bio": "Vivamus euismod urna. Nullam lobortis quam", "age": 96},
 	{"id_user": 749, "pop": 212, "genre": 2, "orientation": 1, "bio": "ridiculus mus. Donec dignissim magna a tortor. Nunc commodo auctor velit. Aliquam nisl. Nulla eu neque pellentesque massa lobortis ultrices.", "age": 24},
-	{"id_user": 750, "pop": 87, "genre": 1, "orientation": 3, "bio": "dolor, tempus non, lacinia at, iaculis quis, pede. Praesent eu dui. Cum sociis natoque penatibus", "age": 41}
+	{"id_user": 750, "pop": 87, "genre": 1, "orientation": 3, "bio": "dolor, tempus non, lacinia at, iaculis quis, pede. Praesent eu dui. Cum sociis natoque penatibus", "age": 41},
+	{"id_user": 751, "pop": 123, "genre": 1, "orientation": 2, "bio": "elit, pellentesque a, facilisis non, bibendum sed, est. Nunc laoreet", "age": 102},
+	{"id_user": 752, "pop": 319, "genre": 1, "orientation": 2, "bio": "convallis ligula. Donec luctus aliquet odio. Etiam ligula tortor, dictum eu,", "age": 44},
+	{"id_user": 753, "pop": 115, "genre": 2, "orientation": 2, "bio": "montes, nascetur ridiculus mus. Aenean eget magna.", "age": 114},
+	{"id_user": 754, "pop": 295, "genre": 1, "orientation": 1, "bio": "magna a tortor. Nunc commodo auctor velit. Aliquam nisl.", "age": 97},
+	{"id_user": 755, "pop": 128, "genre": 1, "orientation": 3, "bio": "non, dapibus rutrum, justo. Praesent", "age": 127},
+	{"id_user": 756, "pop": 378, "genre": 1, "orientation": 1, "bio": "inceptos hymenaeos. Mauris ut quam vel sapien imperdiet ornare. In faucibus. Morbi", "age": 113},
+	{"id_user": 757, "pop": 104, "genre": 2, "orientation": 3, "bio": "purus. Duis elementum, dui quis accumsan convallis, ante", "age": 113},
+	{"id_user": 758, "pop": 355, "genre": 2, "orientation": 2, "bio": "Ut tincidunt orci quis lectus. Nullam suscipit, est ac facilisis facilisis, magna", "age": 128},
+	{"id_user": 759, "pop": 190, "genre": 2, "orientation": 3, "bio": "et pede. Nunc sed orci lobortis augue scelerisque mollis. Phasellus", "age": 118},
+	{"id_user": 760, "pop": 376, "genre": 2, "orientation": 3, "bio": "metus facilisis lorem tristique aliquet. Phasellus fermentum convallis", "age": 94},
+	{"id_user": 761, "pop": 393, "genre": 1, "orientation": 2, "bio": "blandit viverra. Donec tempus, lorem fringilla ornare placerat, orci lacus vestibulum lorem, sit", "age": 113},
+	{"id_user": 762, "pop": 130, "genre": 1, "orientation": 2, "bio": "volutpat. Nulla facilisis. Suspendisse commodo tincidunt nibh. Phasellus nulla. Integer vulputate, risus a ultricies adipiscing, enim mi", "age": 126},
+	{"id_user": 763, "pop": 328, "genre": 2, "orientation": 3, "bio": "Ut tincidunt orci quis lectus.", "age": 119},
+	{"id_user": 764, "pop": 260, "genre": 1, "orientation": 1, "bio": "velit egestas lacinia. Sed congue, elit sed consequat auctor, nunc nulla vulputate dui, nec", "age": 116},
+	{"id_user": 765, "pop": 181, "genre": 1, "orientation": 2, "bio": "vitae dolor. Donec fringilla. Donec feugiat metus", "age": 94},
+	{"id_user": 766, "pop": 66, "genre": 1, "orientation": 1, "bio": "imperdiet ornare. In faucibus. Morbi vehicula. Pellentesque tincidunt tempus risus. Donec egestas. Duis", "age": 96},
+	{"id_user": 767, "pop": 201, "genre": 2, "orientation": 2, "bio": "enim, condimentum eget, volutpat ornare, facilisis eget, ipsum. Donec sollicitudin", "age": 33},
+	{"id_user": 768, "pop": 302, "genre": 1, "orientation": 3, "bio": "ut cursus luctus, ipsum leo", "age": 97},
+	{"id_user": 769, "pop": 150, "genre": 1, "orientation": 3, "bio": "consequat purus. Maecenas libero est, congue a, aliquet vel, vulputate eu, odio. Phasellus at", "age": 26},
+	{"id_user": 770, "pop": 378, "genre": 1, "orientation": 3, "bio": "libero. Proin sed turpis nec mauris blandit mattis. Cras eget nisi dictum augue malesuada malesuada. Integer id magna et", "age": 29},
+	{"id_user": 771, "pop": 166, "genre": 2, "orientation": 2, "bio": "mattis. Cras eget nisi dictum augue malesuada malesuada. Integer id magna et ipsum cursus vestibulum. Mauris magna.", "age": 121},
+	{"id_user": 772, "pop": 148, "genre": 2, "orientation": 2, "bio": "metus vitae velit egestas lacinia. Sed congue, elit sed consequat auctor, nunc nulla vulputate dui, nec tempus mauris", "age": 106},
+	{"id_user": 773, "pop": 315, "genre": 1, "orientation": 1, "bio": "nulla. In tincidunt congue turpis. In condimentum. Donec", "age": 106},
+	{"id_user": 774, "pop": 77, "genre": 1, "orientation": 2, "bio": "Aliquam erat volutpat. Nulla dignissim. Maecenas ornare egestas", "age": 54},
+	{"id_user": 775, "pop": 292, "genre": 2, "orientation": 3, "bio": "nunc, ullamcorper eu, euismod ac, fermentum", "age": 83},
+	{"id_user": 776, "pop": 273, "genre": 2, "orientation": 2, "bio": "sed tortor. Integer aliquam adipiscing lacus. Ut nec urna et arcu imperdiet ullamcorper. Duis at lacus.", "age": 83},
+	{"id_user": 777, "pop": 396, "genre": 1, "orientation": 1, "bio": "Duis dignissim tempor arcu. Vestibulum ut eros non enim", "age": 93},
+	{"id_user": 778, "pop": 208, "genre": 1, "orientation": 1, "bio": "convallis in, cursus et, eros. Proin ultrices.", "age": 92},
+	{"id_user": 779, "pop": 217, "genre": 1, "orientation": 3, "bio": "risus odio, auctor vitae, aliquet nec, imperdiet nec, leo. Morbi neque tellus, imperdiet non, vestibulum nec, euismod in,", "age": 45},
+	{"id_user": 780, "pop": 118, "genre": 1, "orientation": 3, "bio": "dolor. Donec fringilla. Donec feugiat metus sit", "age": 76},
+	{"id_user": 781, "pop": 135, "genre": 2, "orientation": 1, "bio": "elit, pretium et, rutrum non, hendrerit id, ante. Nunc mauris sapien, cursus in, hendrerit consectetuer, cursus", "age": 86},
+	{"id_user": 782, "pop": 129, "genre": 2, "orientation": 2, "bio": "amet metus. Aliquam erat volutpat. Nulla facilisis. Suspendisse", "age": 65},
+	{"id_user": 783, "pop": 265, "genre": 1, "orientation": 1, "bio": "vehicula aliquet libero. Integer in magna.", "age": 43},
+	{"id_user": 784, "pop": 86, "genre": 2, "orientation": 1, "bio": "ipsum cursus vestibulum. Mauris magna. Duis dignissim", "age": 124},
+	{"id_user": 785, "pop": 254, "genre": 1, "orientation": 1, "bio": "tempor bibendum. Donec felis orci, adipiscing non, luctus sit", "age": 59},
+	{"id_user": 786, "pop": 326, "genre": 1, "orientation": 1, "bio": "parturient montes, nascetur ridiculus mus. Donec dignissim magna a tortor. Nunc commodo auctor velit. Aliquam nisl.", "age": 35},
+	{"id_user": 787, "pop": 332, "genre": 1, "orientation": 3, "bio": "dolor sit amet, consectetuer adipiscing elit. Curabitur sed tortor. Integer aliquam adipiscing", "age": 80},
+	{"id_user": 788, "pop": 57, "genre": 1, "orientation": 1, "bio": "arcu iaculis enim, sit amet ornare lectus justo eu arcu. Morbi sit amet massa. Quisque", "age": 100},
+	{"id_user": 789, "pop": 218, "genre": 2, "orientation": 1, "bio": "in, hendrerit consectetuer, cursus et, magna. Praesent interdum ligula eu enim. Etiam imperdiet dictum magna. Ut tincidunt orci", "age": 38},
+	{"id_user": 790, "pop": 78, "genre": 2, "orientation": 3, "bio": "erat. Sed nunc est, mollis non, cursus non, egestas a, dui. Cras pellentesque. Sed dictum. Proin eget odio. Aliquam", "age": 52},
+	{"id_user": 791, "pop": 261, "genre": 2, "orientation": 3, "bio": "dolor vitae dolor. Donec fringilla. Donec feugiat metus sit", "age": 60},
+	{"id_user": 792, "pop": 398, "genre": 2, "orientation": 2, "bio": "posuere vulputate, lacus. Cras interdum. Nunc sollicitudin commodo ipsum.", "age": 120},
+	{"id_user": 793, "pop": 165, "genre": 1, "orientation": 3, "bio": "libero. Donec consectetuer mauris id sapien. Cras dolor dolor, tempus non, lacinia at, iaculis quis, pede. Praesent eu", "age": 98},
+	{"id_user": 794, "pop": 293, "genre": 2, "orientation": 1, "bio": "pharetra. Nam ac nulla. In tincidunt", "age": 54},
+	{"id_user": 795, "pop": 355, "genre": 2, "orientation": 3, "bio": "a, dui. Cras pellentesque. Sed dictum. Proin eget odio. Aliquam vulputate ullamcorper magna. Sed eu eros. Nam consequat", "age": 97},
+	{"id_user": 796, "pop": 163, "genre": 1, "orientation": 1, "bio": "luctus et ultrices posuere cubilia Curae Donec tincidunt. Donec vitae erat vel pede blandit congue. In scelerisque scelerisque", "age": 123},
+	{"id_user": 797, "pop": 212, "genre": 1, "orientation": 2, "bio": "nisi sem semper erat, in consectetuer ipsum nunc id enim. Curabitur massa. Vestibulum accumsan neque et nunc. Quisque ornare tortor", "age": 118},
+	{"id_user": 798, "pop": 89, "genre": 1, "orientation": 3, "bio": "ut quam vel sapien imperdiet ornare. In faucibus. Morbi vehicula. Pellentesque tincidunt tempus risus. Donec egestas. Duis ac arcu.", "age": 18},
+	{"id_user": 799, "pop": 229, "genre": 2, "orientation": 3, "bio": "vulputate, risus a ultricies adipiscing, enim mi tempor", "age": 121},
+	{"id_user": 800, "pop": 92, "genre": 1, "orientation": 1, "bio": "vehicula et, rutrum eu, ultrices sit amet, risus. Donec nibh", "age": 52}
 ];
 
 var ville = [
 	{"v": "Paris"},
-	{"v": "Londre"},
+	{"v": "Londres"},
 	{"v": "Madrid"},
 	{"v": "Berlin"},
 	{"v": "Rome"},
@@ -786,6 +838,7 @@ var ville = [
 	{"v": "Nice"},
 ];
 var i = 0;
+var tr = 0
 data.forEach((tmp) => {
 	var j = i
 	i++
@@ -793,8 +846,18 @@ data.forEach((tmp) => {
 		i = 0
 	getCoords(ville[j].v)
 	.then((coords) => {
-		var sql = "INSERT INTO profil SET id_user= ?, pop= ?, genre= ?, orientation= ?, ville= ?, bio= ?, age= ?, lat= ?, lng= ?"
-		var inserts = [tmp.id_user, tmp.pop, tmp.genre, tmp.orientation, ville[j].v, tmp.bio, tmp.age, coords.lat, coords.lng]
+		if (tr > 99)
+			tr = 0
+		if (tmp.id_user <= 400)	
+			var avatar = 'https://randomuser.me/api/portraits/women/' + tr + '.jpg'
+		else
+			var avatar = 'https://randomuser.me/api/portraits/men/' + tr + '.jpg'
+		tr++
+		if (tmp.id_user <= 400)
+			var sql = "INSERT INTO profil SET id_user= ?, pop= ?, genre= 2, orientation= ?, ville= ?, bio= ?, age= ?, lat= ?, lng= ?, p_profil=?, img_profil=1"
+		else
+			var sql = "INSERT INTO profil SET id_user= ?, pop= ?, genre= 1, orientation= ?, ville= ?, bio= ?, age= ?, lat= ?, lng= ?, p_profil=?, img_profil=1"
+		var inserts = [tmp.id_user, tmp.pop, tmp.orientation, ville[j].v, tmp.bio, tmp.age, coords.lat, coords.lng, avatar]
 		bdd.query(mysql.format(sql, inserts))
 	}).catch((err) => {
 		console.log(err)

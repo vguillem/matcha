@@ -4,19 +4,20 @@ exports.addblist = (req, res) => {
 	pro.dellblist(req.session.user.id, req.params.id)
 	pro.addblist(req.session.user.id, req.params.id)
 	pro.unlike(req.session.user.id, req.params.id)
+	req.flash('succes', 'Utilisateur bloque')
 	res.redirect('/sall')
 }
 
 exports.dellblist = (req, res) => {
 	var pro = require('../modele/profil.js')
 	pro.dellblist(req.session.user.id, req.params.id)
-	res.redirect('/sall')
+	res.redirect(req.session.lastpage)
 }
 
 
 exports.report = (req, res) => {
 	req.flash('succes', 'une alerte a ete envoye')
-	res.redirect('/sall')
+	res.redirect(req.session.lastpage)
 }
 
 

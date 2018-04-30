@@ -35,6 +35,7 @@ app.use(require('./middleware/secu'))
 app.use(require('./middleware/profil'))
 app.use(require('./middleware/lastco'))
 app.use(require('./middleware/notif'))
+app.use(require('./middleware/lastpage'))
 io.use(sharedsession(session, {
     autoSave:true
 }));

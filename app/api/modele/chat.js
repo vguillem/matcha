@@ -14,7 +14,7 @@ class Chat {
 				bdd.query(mysql.format(sql, inserts), (err, rows3) => {
 					if (err) throw err
 					if (rows3[0]) {
-						var sql ="SELECT * FROM chat WHERE (login_posteur=? AND login_destinataire=?) OR (login_posteur=? AND login_destinataire=?) LIMIT 50"
+						var sql ="SELECT * FROM chat WHERE (login_posteur=? AND login_destinataire=?) OR (login_posteur=? AND login_destinataire=?) ORDER BY id DESC LIMIT 50"
 						var inserts = [loginsrc, logindest, logindest, loginsrc]
 						bdd.query(mysql.format(sql, inserts), (err, rows4) => {
 							if (err) throw err

@@ -1,42 +1,42 @@
 <% include ../header %>
 <div class='container-fluid'>
 <div class='row'>
-<div class='offset-1 col-1 history'>
-<p class='titre'>Historique</p>
+<div class='col-2 history d-none d-sm-block d-md-block'>
+<p class='historique'>Historique</p>
 	<% if (locals.hist) {locals.hist.forEach(function(htmp) {%>
 		<div class='hist_action'>
 			<a href='/user?id=<%= htmp.visiteur %>'><%= htmp.login%></a> : <%= htmp.action %> le <%= htmp.heure %>
 		</div>
 	<% })} %>
 </div>
-<div class='col-9'>
+<div class='col-sm-9'>
 <form class='container offset-1 col-10' method='post' action='/sall'>
 <p class='titre'>filtrer vos match</p>
-    <div class="form-group col-md-12">
+    <div class="form-group">
       <label for='agemin'>Age min</label>
       <input id='agemin' name='agemin' type='number' value='<% if (locals.filtre && (locals.filtre.agemin || (locals.filtre.agemin === 0))){%><%=locals.filtre.agemin%><%}%>'/>
     </div>
-    <div class="form-group col-md-12">
+    <div class="form-group">
       <label for='agemax'>Age max</label>
       <input id='agemax' name='agemax' type='number' value='<% if (locals.filtre && (locals.filtre.agemax || (locals.filtre.agemax === 0))){%><%=locals.filtre.agemax%><%}%>'/>
     </div>
-    <div class="form-group col-md-12">
+    <div class="form-group">
       <label for='distmin'>Distance min</label>
       <input id='distmin' name='distmin' type='number' value='<% if (locals.filtre && (locals.filtre.distmin || (locals.filtre.distmin === 0))){%><%=locals.filtre.distmin%><%}%>'/>
     </div>
-    <div class="form-group col-md-12">
+    <div class="form-group">
       <label for='distmax'>Distance max</label>
       <input id='distmax' name='distmax' type='number' value='<% if (locals.filtre && (locals.filtre.distmax || (locals.filtre.distmax === 0))){%><%=locals.filtre.distmax%><%}%>'/>
     </div>
-    <div class="form-group col-md-12">
+    <div class="form-group">
       <label for='popmin'>Popularite min</label>
       <input id='popmin' name='popmin' type='number' value='<% if (locals.filtre && (locals.filtre.popmin || (locals.filtre.popmin === 0))){%><%=locals.filtre.popmin%><%}%>'/>
     </div>
-    <div class="form-group col-md-12">
+    <div class="form-group">
       <label for='popmax'>Popularite max</label>
       <input id='popmax' name='popmax' type='number' value='<% if (locals.filtre && (locals.filtre.popmax || (locals.filtre.popmax === 0))){%><%=locals.filtre.popmax%><%}%>'/>
     </div>
-    <div class="form-group col-md-12">
+    <div class="form-group">
       <label for='stag'>tag</label><br/>
 	<% if (locals.filtre && locals.filtre.stag) { locals.filtre.stag.forEach(function(stag) {%>
 		<div class="form-check form-check-inline">
@@ -54,34 +54,35 @@
 <input type='submit' name='filt' value='Popularite'>
 </form>
 <hr>
-<form class='container offset-1 col-10'>
+<form class='container offset-sm-1 col-sm-10'>
 	<div class='row'>
 		<% if (locals.users && locals.users[0]) {locals.users.forEach(function(tmp) { if (tmp.show === 1) {%>
-		<div class='ml-2 ml-lg-5 mr-5 col-lg-3 border border-dark mb-5'>
+		<div class='ml-5 mb-5 fiche'>
 			<div class='row'>
 				<div class=' col-12'>
-					<% if (tmp.img_profil === 1) { %>
+					<% if (tmp.p_profil) { %>
+					 <a href="/user?id=<%= tmp.uid%>"><img src="<%=tmp.p_profil%>" class="img-thumbnail profil float-left ml-1 mr-1" alt="Photo profil"></a>
+					<% } else if (tmp.img_profil === 1) { %>
 					 <a href="/user?id=<%= tmp.uid%>"><img src="upload/<%= tmp.uid%>-1.png" class="img-thumbnail profil float-left ml-1 mr-1" alt="Photo profil"></a>
 					 <% } else { %>
 					 <a href="/user?id=<%= tmp.uid%>"><img src="upload/noprofil.png" class="img-thumbnail profil float-left ml-1 mr-1" alt="Photo profil"></a>
 					 <% } %>
-	 <p><%= tmp.login%><br/>
-	 <%= tmp.age%> ans<br/>
-	 <%= tmp.ville%> (<%=tmp.distance%>km)<br/>
+	 <%= tmp.login%>
 	 <% if (tmp.genre === 1) {%>
           <img src='./glyphicons_free/glyphicons/png/glyphicons-751-gender-male.png' class='icons'><br/>
 	 <% } else {%>
           <img src='./glyphicons_free/glyphicons/png/glyphicons-752-gender-female.png' class='icons'><br/>
-	 <% } if (tmp.tlikeid && tmp.tlikeid !== 0) {%>
+	 <% } %>
+	 <%= tmp.age%> ans<br/>
+	 <%= tmp.ville%> (<%=tmp.distance%>km)<br/>
+	 <%if (tmp.tlikeid && tmp.tlikeid !== 0) {%>
 		<a href="/unlike/<%= tmp.uid%>" class='badge badge-primary'>Ne plus matcher</a>
 	 <% } else {%>
 		<a href="/like/<%= tmp.uid%>" class='badge badge-primary'>Matcher</a>
 	 <% }%>
 				</div>
 			</div>
-			<div class='row'>
-					<span class='bg-light col-12'><%= tmp.bio%></span>
-			</div>
+					<p class='font-italic bio'><%= tmp.bio%></p>
 			<div>
 			<% if (tmp.tags) {tmp.tags.forEach(function(ta) {%>
 				<span class='badge badge-info'><%= ta %> </span>
