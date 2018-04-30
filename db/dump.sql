@@ -256,7 +256,7 @@ CREATE TABLE `tag` (
 
 LOCK TABLES `tag` WRITE;
 /*!40000 ALTER TABLE `tag` DISABLE KEYS */;
-INSERT INTO `tag` VALUES (1,'42'),(2,'voiture'),(3,'lire'),(4,'jongler'),(5,'jeux'),(6,'informatique'),(7,'securite'),(8,'math'),(9,'dormir'),(10,'manger'),(11,'jardiner'),(12,'sex'),(13,'musique'),(14,'techno'),(15,'classique'),(16,'photos'),(17,'art'),(18,'voyage'),(19,'recherche'),(20,'programation'),(21,'cinema'),(22,'fleur'),(23,'pain'),(24,'herbe'),(25,'42'),(26,'voiture'),(27,'lire'),(28,'jongler'),(29,'jeux'),(30,'informatique'),(31,'securite'),(32,'math'),(33,'dormir'),(34,'manger'),(35,'jardiner'),(36,'sex'),(37,'musique'),(38,'techno'),(39,'classique'),(40,'photos'),(41,'art'),(42,'voyage'),(43,'recherche'),(44,'programation'),(45,'cinema'),(46,'fleur'),(47,'pain'),(48,'herbe'),(49,'42'),(50,'voiture'),(51,'lire'),(52,'jongler'),(53,'jeux'),(54,'informatique'),(55,'securite'),(56,'math'),(57,'dormir'),(58,'manger'),(59,'jardiner'),(60,'sex'),(61,'musique'),(62,'techno'),(63,'classique'),(64,'photos'),(65,'art'),(66,'voyage'),(67,'recherche'),(68,'programation'),(69,'cinema'),(70,'fleur'),(71,'pain'),(72,'herbe');
+INSERT INTO `tag` VALUES (1,'42'),(2,'voiture'),(3,'lire'),(4,'jongler'),(5,'jeux'),(6,'informatique'),(7,'securite'),(8,'math'),(9,'dormir'),(10,'manger'),(11,'jardiner'),(12,'sex'),(13,'musique'),(14,'techno'),(15,'classique'),(16,'photos'),(17,'art'),(18,'voyage'),(19,'recherche'),(20,'programation'),(21,'cinema'),(22,'fleur'),(23,'pain'),(24,'herbe');
 /*!40000 ALTER TABLE `tag` ENABLE KEYS */;
 UNLOCK TABLES;
 
