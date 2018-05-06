@@ -5,6 +5,7 @@ var bodyparser = require('body-parser')
 var Session = require('express-session')
 var Auth = require('./controleur/auth')
 var Profil = require('./controleur/profil')
+var Chat = require('./controleur/chat')
 var Blist = require('./controleur/blist')
 var Search = require('./controleur/search')
 var fs = require('fs')
@@ -12,12 +13,14 @@ var busboy = require('connect-busboy')
 var io = require('socket.io')(http)
 var sharedsession = require("express-socket.io-session")
 var Sock = require('./modele/sock.js')
+var bddauth = require('./modele/auth.js')
 var session = Session({
 	secret: 'nqwnqw',
 	resave: false,
 	saveUninitialized: true,
 	cookie: {secure: false}
 })
+var notif = require('./modele/notif')
 
 // Template
 app.set('view engine', 'ejs')
@@ -36,6 +39,7 @@ app.use(require('./middleware/profil'))
 app.use(require('./middleware/lastco'))
 app.use(require('./middleware/notif'))
 app.use(require('./middleware/lastpage'))
+app.use(require('./middleware/chat'))
 io.use(sharedsession(session, {
     autoSave:true
 }));
@@ -48,17 +52,24 @@ io.sockets.on('connection', (socket) => {
 	{
 		users[socket.handshake.session.user.login] = socket.id
 		users[socket.handshake.session.user.id] = socket.id
-		}
-	socket.on('chat message', (msg)=> {
-		Sock.newmessage(msg.user, socket.handshake.session.user.id,socket.handshake.session.user.login, msg.data, (rows) => {
-			if (rows[0]) {
-				socket.broadcast.to(users[msg.user]).emit('chat message', {
-					user : socket.handshake.session.user.login,
-					data : msg.data,
-				})
-			}
+		socket.on('chat message', (msg)=> {
+			Sock.newmessage(msg.user, socket.handshake.session.user.id, socket.handshake.session.user.login, msg.data, (rows) => {
+				if (rows[0]) {
+					socket.broadcast.to(users[msg.user]).emit('chat message', {
+						user : socket.handshake.session.user.login,
+						data : msg.data,
+					})
+					bddauth.login(msg.user, (rows2) => {
+							notif.chatnotif(socket.handshake.session.user.id, rows2[0].id)
+							io.sockets.to(users[rows2[0].id]).emit('notif',  {
+								user : socket.handshake.session.user.login,
+								data : ' vous a envoye un message',
+							})
+					})
+				}
+			})
 		})
-	})
+	}
 })
 
 app.get('/', (req, res) => {
@@ -108,7 +119,10 @@ app.post('/compte', (req, res) => {
 
 
 app.get('/forgot', (req, res) => {
-	res.render('auth/forgot')
+	if(req.session.user)
+		res.redirect('/sall')
+	else
+		res.render('auth/forgot')
 })
 
 app.post('/forgot', (req, res) => {
@@ -140,21 +154,54 @@ app.post('/sall', (req, res) => {
 
 app.get('/user', (req, res) => {
 	var id = req.query.id
-	Search.user(req, res)
-	io.sockets.to(users[id]).emit('notif', res.locals.nbnotif)
+	if (isNaN(id)) {
+		res.redirect('/sall')
+	}
+	else {
+		Search.user(req, res)
+		io.sockets.to(users[id]).emit('notif',  {
+			user : req.session.user.login,
+			data : ' a visite votre profil'
+		})
+	}
 })
 
 
 app.get('/unlike/:id', (req, res) => {
-	Profil.unlike(req, res)
+	var id = req.params.id
+	if (isNaN(id)) {
+		res.redirect('/sall')
+	}
+	else {
+		Profil.unlike(req, res)
+		io.sockets.to(users[id]).emit('notif',  {
+			user : req.session.user.login,
+			data : ' a arrete de vous match'
+		})
+	}
 })
 
 app.get('/like/:id', (req, res) => {
-	Profil.like(req, res)
+	var id = req.params.id
+	if (isNaN(id)) {
+		res.redirect('/sall')
+	}
+	else {
+		Profil.like(req, res)
+		io.sockets.to(users[id]).emit('notif',  {
+			user : req.session.user.login,
+			data : ' vous a match'
+		})
+	}
 })
 
 app.get('/chat', (req, res) => {
-	res.render('chat/chat')
+	Chat.chat(req, res)
+})
+
+
+app.get('/chats', (req, res) => {
+	Chat.chats(req, res)
 })
 
 
@@ -192,8 +239,18 @@ app.get('/report/:id', (req, res) => {
 	Blist.report(req, res)
 })
 
+app.get('/ichat', (req, res) => {
+	Chat.ichat(req, res)
+})
+
+
+app.get('/404', (req, res) => {
+	res.render('404')
+})
+
+
 app.use((req, res, next) => {
-	res.status(404).render('404')
+	res.status(404).redirect('/404')
 })
 
 http.listen(8100)

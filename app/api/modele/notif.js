@@ -3,6 +3,20 @@ var bdd = require('../config/database')
 
 class Notif {
 
+	static vunotif (id) {
+		var sql = "UPDATE notif SET vu=1 WHERE id_notifie=?"
+		var inserts = [id]
+		bdd.query(mysql.format(sql, inserts))
+	}
+
+
+	static chatnotif (id_notifieur, id_notifie) {
+		var sql = "INSERT INTO notif SET id_notifieur= ?, id_notifie= ?, action='vous a envoye un message', heure=NOW()"
+		var inserts = [id_notifieur, id_notifie]
+		bdd.query(mysql.format(sql, inserts))
+	}
+
+
 	static mlike (id_notifieur, id_notifie) {
 		var sql = "INSERT INTO notif SET id_notifieur= ?, id_notifie= ?, action='vous a matche (vous l avez deja matche)', heure=NOW()"
 		var inserts = [id_notifieur, id_notifie]

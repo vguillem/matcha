@@ -8,17 +8,21 @@ exports.unlike = (req, res) => {
 	var pro = require('../modele/profil.js')
 	var notif = require('../modele/notif.js')
 	pro.unlike(req.session.user.id, req.params.id)
-	hist.unlike(req.session.user.id, req.params.id)
-	pro.getlike(req.session.user.id, req.params.id, (rows) => {
-		if (rows[0])
-			notif.munlike(req.session.user.id, req.params.id)
-		else
-			notif.unlike(req.session.user.id, req.params.id)
-	
+	if (req.session.lastpage.substr(0, 5) !== '/user') {
+		hist.unlike(req.session.user.id, req.params.id)
+		pro.uppop(req.params.id, -10)
+		pro.getlike(req.session.user.id, req.params.id, (rows) => {
+			if (rows[0])
+				notif.munlike(req.session.user.id, req.params.id)
+			else
+				notif.unlike(req.session.user.id, req.params.id)
+		
+			res.redirect(req.session.lastpage)
+		})
+		}
+	else
 		res.redirect(req.session.lastpage)
-	})
 }
-
 
 exports.like = (req, res) => {
 	var pro = require('../modele/profil.js')
@@ -27,6 +31,7 @@ exports.like = (req, res) => {
 	pro.unlike(req.session.user.id, req.params.id)
 	pro.like(req.session.user.id, req.params.id)
 	hist.like(req.session.user.id, req.params.id)
+	pro.uppop(req.params.id, 10)
 	pro.getlike(req.session.user.id, req.params.id, (rows) => {
 		if (rows[0])
 			notif.mlike(req.session.user.id, req.params.id)
@@ -41,6 +46,7 @@ exports.like = (req, res) => {
 
 exports.getnotif = (req, res) => {
 	var notif = require('../modele/notif.js')
+	notif.vunotif(req.session.user.id)
 	notif.getnotif(req.session.user.id, (rows) => {
 		if (rows[0])
 			res.locals.notif = rows

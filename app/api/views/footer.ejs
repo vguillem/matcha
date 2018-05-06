@@ -1,3 +1,9 @@
+<% if (locals.ichat) {%>
+<div id='ichat'>
+<div class='chatlogin border border-bottom-0'><%= locals.ichat%></div>
+<iframe title='chat' id='iframechat' src='/chat?id=<%=locals.ichat%>'></iframe>
+</div>
+<%}%>
 </div>
 <footer class='footer hfcolor'>
 		<a href="/sall">Accueil</a>

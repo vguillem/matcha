@@ -34,11 +34,14 @@
 	 Cherche : Femme<br/>
 	 <% } else {%>
 	 Cherche : Homme/Femme<br/>
+	 <div id='iduser' class='d-none'><%=tmp.uid%></div>
+	 <div id='match'>
 	 <% } if (tmp.tlikeid && tmp.tlikeid !== 0) {%>
-		<a href="/unlike/<%= tmp.uid%>" class='badge badge-primary'>Ne plus matcher</a>
+		<a href="/unlike/<%= tmp.uid%>" id='matchen' class='badge badge-primary'>Ne plus matcher</a>
 	 <% } else {%>
-		<a href="/like/<%= tmp.uid%>" class='badge badge-primary'>Matcher</a>
+		<a href="/like/<%= tmp.uid%>" id='matchey' class='badge badge-primary'>Matcher</a>
 	 <% }%>
+	 </div>
 				</div>
 			</div>
 					<span class='bio'><%= tmp.bio%></span>
@@ -50,46 +53,7 @@
 			<a href="/addblist/<%= tmp.uid%>" class='badge badge-primary'>Bloquer</a>
 			<a href="/report/<%= tmp.uid%>" class='badge badge-primary'>Reporter faux compte</a>
 		</div>
+	</div>
+</div>
 	<%})}%>
-	</div>
-</div>
-<%if (locals.chat && locals.chat[0]) {%>
-<div class='container'>
-	<form action=''>
-	<div class='card offset-md-1 col-md-9'>
-		<div class="card-header">Message</div>
-		<ul id='message' class='card-body'>
-		<%locals.chat.forEach(function(chatmes){%>
-			<li><%=chatmes.login_posteur%> : <%=chatmes.message%></li>
-		<%})%>
-		</ul>
-	</div>
-	<div class='row'>
-		<input id='m' class="offset-1 col-md-9"/><button>Envoyer</button>
-		</div>
-	</form>
-</div>
-<script>
-	$('#message').scrollTop(1E10)
-	$(function() {
-		var socketio = io.connect()
-		$('form').submit(function() {
-			var msg = {
-				"user" : $('#login').text(),
-				"data" : $('#m').val()
-			}
-			socketio.emit('chat message', msg)
-			$('#message').append($('<li>').text('Vous : ' + msg.data))
-			$('#message').scrollTop(1E10)
-			$('#m').val('')
-			return false
-		})
-		socketio.on('chat message', function(msg) {
-			if (msg.user === $('#login').text())
-				$('#message').append($('<li>').text(msg.user + ' : ' + msg.data))
-				$('#message').scrollTop(1E10)
-		})
-	})
-</script>
-<%}%>
 <% include ../footer %>

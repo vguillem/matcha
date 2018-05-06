@@ -1,26 +1,23 @@
 var bcrypt = require('bcrypt')
 var iploc = require('iplocation')
 var nodemailer = require('nodemailer');
-function verif(data, type, len){
-	if (data === undefined || data === '' || (data.length > len && len !== 0))
-		return false
-	if (type === 1) {
-		if (!Number.isInteger(data))
-			return false
-	}
-	return true
-}
+var Verif = require('../modele/verif.js')
 
 exports.resetmdppost = (req, res) => {
+	if (req.session.user)
+	{
+		res.redirect('/sall')
+	}
+	else {
 	var ente = req.query.code
 	var num = /[0-9]/
 	var min = /[a-z]/
 	var maj = /[A-Z]/
-	if (!verif(ente, 0, 20)) {
+	if (!Verif.verif(ente, 0, 20)) {
 		req.flash('error', 'Code invalide.')
 		res.redirect('/forgot')
 	}
-	else if (!verif(req.body.passwd, 0, 30)) {
+	else if (!Verif.verif(req.body.passwd, 0, 30)) {
 		req.flash('error', 'erreur password.')
 		res.redirect('/forgot')
 	}
@@ -46,11 +43,17 @@ exports.resetmdppost = (req, res) => {
 			}
 		})
 	}
+	}
 }
 
 exports.resetmdp = (req, res) => {
+	if (req.session.user)
+	{
+		res.redirect('/sall')
+	}
+	else {
 	var ente = req.query.code
-	if (!verif(ente, 0, 20)) {
+	if (!Verif.verif(ente, 0, 20)) {
 		req.flash('error', 'Code invalide.')
 		res.redirect('/forgot')
 	}
@@ -58,10 +61,16 @@ exports.resetmdp = (req, res) => {
 		res.locals.code = ente
 		res.render('auth/resetmdp')
 	}
+	}
 }
 
 exports.forgot = (req, res) => {
-	if (!verif(ente, 0, 250)) {
+	if (req.session.user)
+	{
+		res.redirect('/sall')
+	}
+	else {
+	if (!Verif.verif(req.body.fmail, 0, 250)) {
 		req.flash('error', 'Mail invalide.')
 		res.redirect('/forgot')
 	}
@@ -83,10 +92,10 @@ exports.forgot = (req, res) => {
 				}
 				auth.insert_forgot(rows[0].id, code)
 				var transporter = nodemailer.createTransport({
-				  service: 'gmail',
+				  service: 'Gmail',
 					auth: {
 						user: 'v.matcha42@gmail.com',
-						pass: '111111qQ'
+						pass: 'PASSwOrD'
 					}
 				});
 				var message = 'pour reinitialiser votre mot de passe, cliquez sur le lien suivant: http://5.196.225.53:8100/resetmdp?code=' + code
@@ -105,9 +114,10 @@ exports.forgot = (req, res) => {
 			}
 			else {
 				req.flash('error', 'Mail invalide.')
-				res.redirect('/login')
+				res.redirect('/forgot')
 			}
 		})
+	}
 	}
 }
 
@@ -229,18 +239,18 @@ exports.compte = (req, res) => {
 	var lastname = req.session.user.lastname
 	var pass = req.session.user.passwd
 	var mail = req.session.user.mail
-	if (verif(req.body.clastname, 0, 250))
+	if (Verif.verif(req.body.clastname, 0, 250))
 		lastname = req.body.clastname
-	if (verif(req.body.cfirstname, 0, 250))
+	if (Verif.verif(req.body.cfirstname, 0, 250))
 		firstname = req.body.cfirstname
-	if (verif(req.body.cemail, 0, 250))
+	if (Verif.verif(req.body.cemail, 0, 250))
 		mail = req.body.cemail
 	if (!re.test(mail))
 	{
 		req.flash('error', 'Email non valide.')
 		res.redirect('/compte')
 	}
-	else if (verif(req.body.cpasswd, 0, 50))
+	else if (Verif.verif(req.body.cpasswd, 0, 50))
 	{
 		var num = /[0-9]/
 		var min = /[a-z]/
@@ -290,6 +300,7 @@ exports.logout = (req, res) => {
 	if (req.session.user)
 	{
 		req.session.user = undefined
+		req.session.ichat = undefined
 	}
 	res.redirect('/')
 }

@@ -1,17 +1,30 @@
+var Verif = require('../modele/verif.js')
 
 exports.addblist = (req, res) => {
+	if (!Verif.verif(req.params.id, 1, 0))
+	{
+		res.redirect('/sall')
+	}
+	else {
 	var pro = require('../modele/profil.js')
 	pro.dellblist(req.session.user.id, req.params.id)
 	pro.addblist(req.session.user.id, req.params.id)
 	pro.unlike(req.session.user.id, req.params.id)
 	req.flash('succes', 'Utilisateur bloque')
 	res.redirect('/sall')
+	}
 }
 
 exports.dellblist = (req, res) => {
+	if (!Verif.verif(req.params.id, 1, 0))
+	{
+		res.redirect('/sall')
+	}
+	else {
 	var pro = require('../modele/profil.js')
 	pro.dellblist(req.session.user.id, req.params.id)
 	res.redirect(req.session.lastpage)
+	}
 }
 
 

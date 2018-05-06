@@ -179,7 +179,6 @@ exports.user = (req, res) => {
 			{
 				search.user(rows[0].lng, rows[0].lat, id, req.session.user.id, (rows3) => {
 					if (rows3[0]) {
-						console.log(rows3)
 						chat.getchat(req.session.user.login, rows3[0].login, req.session.user.id, id, (rows2) => {
 							var i = 0
 							while (rows2[i]) {
@@ -190,6 +189,7 @@ exports.user = (req, res) => {
 							res.locals.chat = rows2.reverse()
 							hist.v_user(req.session.user.id, rows3[0].uid)
 							notif.v_user(req.session.user.id, rows3[0].uid)
+							pro.uppop(id, 1)
 							if (rows3[0].tag)
 								rows3[0].tags = rows3[0].tag.split(',')
 							else

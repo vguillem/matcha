@@ -12,6 +12,7 @@ background: url(upload/connect.jpg) no-repeat center fixed;
 }
 
 .footer {
+	z-index:1;
 text-align:center;
 position: absolute;
 bottom: 0;
@@ -59,11 +60,15 @@ cursor: inherit;
 display: block;
 }
 
-#message {
-	height: 300px;
-	overflow: scroll;
+.chatlogin {
+	width:100%;
+	height:6%;
+	text-align:center;
+	background-color: rgb(51, 153, 255);
+	border-radius: 10px 10px 1px 1px;
+	border-width:2px !important;
+	border-color:black !important;
 }
-
 .icons {
 	width: 15px;
 	padding-right:5px;
@@ -131,4 +136,38 @@ button {
 	padding:10px;
 	border-radius: 10px 10px 10px 10px;
 	background-color: rgba(160, 211, 248, 0.6);
+}
+
+#zonetmpnotif {
+	position:fixed;
+	bottom: 40px;
+	right:15px;
+}
+
+#tmpnotif {
+	padding:10px;
+	margin:5px;
+	font-style: oblique;
+	width:350px;
+	text-align:center;
+	border-radius: 10px 10px 10px 10px;
+	background-color: rgba(0, 204, 0, 0.2);
+}
+
+#ichat {
+	position:fixed;
+	bottom: 0px;
+	right:5px;
+	width:300px;
+	height:450px;
+	z-index:10;
+}
+
+#iframechat {
+	height:94%;
+}
+
+.fixbot {
+	position:absolute;
+	bottom:0px;
 }

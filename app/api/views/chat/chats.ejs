@@ -1,0 +1,10 @@
+<% include ../header %>
+<div class='col-2 history d-none d-sm-block d-md-block'>
+<p class='historique'>Mes Matches</p>
+	<% if (locals.chats) {locals.chats.forEach(function(tmp) {%>
+		<div class='hist_action'>
+			<a href='/ichat?id=<%=tmp.id_likeur%>&login=<%=tmp.login%>'>Ouvrir le chat avec : <%=tmp.login%></a>
+		</div>
+	<% })} %>
+</div>
+<% include ../footer %>

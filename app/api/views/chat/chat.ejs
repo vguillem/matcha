@@ -1,30 +1,54 @@
-<% include ../header %>
-<div class='container'>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <title>Matcha</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+  <link rel="stylesheet" href="chatcss.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="bootstrap/js/bootstrap.min.js"></script>
+  <script src="/socket.io-client/dist/socket.io.js"></script>
+
+</head>
+<body>
+<%if (locals.chat && locals.chat[0]) {%>
+<span id='login' class='d-none'><%= locals.login%></span>
 	<form action=''>
-	<div class='card offset-md-1 col-md-9'>
-		<div class="card-header">Message</div>
-		<ul id='message' class='card-body'>content</ul>
-	</div>
-	<div class='row'>
-		<input id='m' class="offset-1 col-md-9"/><button>Envoyer</button>
+		<ul id='message' class='card-body'>
+		<%locals.chat.forEach(function(chatmes){%>
+			<li><span class='messagelogin <%=chatmes.login_posteur%>'><%=chatmes.login_posteur%></span> : <span class='messagecontent <%=chatmes.login_posteur%>'><%=chatmes.message%></span></li>
+		<%})%>
+		</ul>
+		<div class='chatsend'>
+		<input id='m' class=""/><button class='btn btn-primary'>Envoyer</button>
 		</div>
 	</form>
-</div>
+<%}%>
 <script>
 	$(function() {
-		$('form').submit(function() {
-			var msg = {
-				"user" : $('#login').text(),
-				"data" : $('#m').val()
-			}
-			socket.emit('chat message', msg)
-			$('#message').append($('<li>').text(msg.user + ' : ' + msg.data))
-			$('#m').val('')
-			return false
-		})
-		socket.on('chat message', function(msg) {
-			$('#message').append($('<li>').text(msg.user + ' : ' + msg.data))
-		})
+		var socket = io.connect()
+		$('#message').scrollTop(1E10)
+			if ($('#message')[0]) {
+			$('form').submit(function() {
+				var msg = {
+					"user" : $('#login').text(),
+					"data" : $('#m').val()
+				}
+				socket.emit('chat message', msg)
+				$('#message').append($('<li>').html("<span class='messagelogin Vous'>Vous</span> : <span class=' messagecontent Vous'>" + msg.data + "</span>"))
+				$('#message').scrollTop(1E10)
+				$('#m').val('')
+				return false
+			})
+			socket.on('chat message', function(msg) {
+				if (msg.user === $('#login').text())
+					$('#message').append($('<li>').html("<span class='messagelogin'>" + msg.user + "</span>" + " : <span class='messagecontent'>" + msg.data + "</span>"))
+					$('#message').scrollTop(1E10)
+			})
+		}
 	})
 </script>
-<% include ../footer %>
+</body>
+</html>
+

@@ -40,7 +40,7 @@
         <a class="nav-link" href="/sall"><img src='./glyphicons_free/glyphicons/png/glyphicons-28-search.png' class='icons'>Rechercher</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/chat"><img src='./glyphicons_free/glyphicons/png/glyphicons-123-message-in.png' class='icons'>Chat</a>
+        <a class="nav-link" href="/chats"><img src='./glyphicons_free/glyphicons/png/glyphicons-123-message-in.png' class='icons'>Chats</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/notif"><img src='./glyphicons_free/glyphicons/png/glyphicons-747-pending-notifications.png' class='icons'>Notifications <span id='notif' class='badge badge-success'><%if (locals.nbnotif){%><%=locals.nbnotif%><% }else{%>0<%}%></span></a>
@@ -63,6 +63,7 @@
     </form>
   </div>
 </nav>
+<div id='zonetmpnotif'></div>
 <div class='containers'>
 <div class='containers offset-1 col-10'>
 	<div class="row">

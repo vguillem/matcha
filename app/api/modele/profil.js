@@ -21,6 +21,13 @@ class Profil {
 		})
 	}
 
+	static uppop (id, nb) {
+		var sql = "UPDATE profil SET pop= pop + ? WHERE id_user=?"
+		var inserts = [nb, id]
+		bdd.query(mysql.format(sql, inserts))
+	}
+
+
 	static addblist (bloqueur, bloque) {
 		var sql = "INSERT INTO blist SET id_bloqueur= ?, id_bloque= ?"
 		var inserts = [bloqueur, bloque]

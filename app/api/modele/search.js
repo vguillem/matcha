@@ -38,12 +38,14 @@ class Search {
 			ON join_tag.id_user = profil.id_user\
 			LEFT JOIN tag\
 			ON join_tag.id_tag = tag.id\
+			LEFT JOIN blist\
+			ON blist.id_bloqueur = ? AND blist.id_bloque = users.id\
 			LEFT JOIN tlike\
 			ON tlike.id_liker = profil.id_user AND tlike.id_likeur = ?\
-			WHERE profil.id_user!= ? AND profil.genre= ? AND (profil.orientation= ? OR profil.orientation=3) AND (profil.age BETWEEN ? AND ?) AND (profil.pop BETWEEN ? AND ?) AND (ST_Distance_Sphere(point(?, ?), point(profil.lng, profil.lat)) / 1000 BETWEEN ? AND ?)\
+			WHERE profil.id_user!= ? AND profil.genre= ? AND (profil.orientation= ? OR profil.orientation=3) AND (profil.age BETWEEN ? AND ?) AND (profil.pop BETWEEN ? AND ?) AND (ST_Distance_Sphere(point(?, ?), point(profil.lng, profil.lat)) / 1000 BETWEEN ? AND ?) AND blist.id IS NULL\
 			GROUP BY uid\
 			ORDER BY " + tri
-			var inserts = [lngo, lato, id, id, orientation, genre, agemin, agemax, popmin, popmax, lngo, lato, distmin, distmax]
+			var inserts = [lngo, lato, id, id, id, orientation, genre, agemin, agemax, popmin, popmax, lngo, lato, distmin, distmax]
 		}
 		bdd.query(mysql.format(sql, inserts), (err, rows) => {
 			if (err) throw err
