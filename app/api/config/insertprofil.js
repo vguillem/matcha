@@ -812,21 +812,6 @@ var ville = [
 	{"v": "Madrid"},
 	{"v": "Berlin"},
 	{"v": "Rome"},
-	{"v": "Tokyo"},
-	{"v": "Barcelone"},
-	{"v": "Prague"},
-	{"v": "Budapest"},
-	{"v": "Vienne"},
-	{"v": "Milan"},
-	{"v": "Florence"},
-	{"v": "Riga"},
-	{"v": "Varsovie"},
-	{"v": "Dublin"},
-	{"v": "Miami"},
-	{"v": "Rio"},
-	{"v": "Boston"},
-	{"v": "Washington"},
-	{"v": "Montreal"},
 	{"v": "Rennes"},
 	{"v": "Nantes"},
 	{"v": "Bordeaux"},
@@ -842,10 +827,11 @@ var tr = 0
 data.forEach((tmp) => {
 	var j = i
 	i++
-	if (i > 28)
+	if (i > 13)
 		i = 0
 	getCoords(ville[j].v)
 	.then((coords) => {
+		var age = Math.floor(Math.random() * (55 -1) + 18);
 		if (tr > 99)
 			tr = 0
 		if (tmp.id_user <= 400)	
@@ -857,7 +843,7 @@ data.forEach((tmp) => {
 			var sql = "INSERT INTO profil SET id_user= ?, pop= ?, genre= 2, orientation= ?, ville= ?, bio= ?, age= ?, lat= ?, lng= ?, p_profil=?, img_profil=1"
 		else
 			var sql = "INSERT INTO profil SET id_user= ?, pop= ?, genre= 1, orientation= ?, ville= ?, bio= ?, age= ?, lat= ?, lng= ?, p_profil=?, img_profil=1"
-		var inserts = [tmp.id_user, tmp.pop, tmp.orientation, ville[j].v, tmp.bio, tmp.age, coords.lat, coords.lng, avatar]
+		var inserts = [tmp.id_user, tmp.pop, tmp.orientation, ville[j].v, tmp.bio, age, coords.lat, coords.lng, avatar]
 		bdd.query(mysql.format(sql, inserts))
 	}).catch((err) => {
 		console.log(err)

@@ -1,59 +1,64 @@
 <% include ../header %>
 
-<div class='container offset-1 col-10 user'>
-	<div class='row'>
-		<% if (locals.users) {locals.users.forEach(function(tmp) {%>
-		<div class='ml-2 ml-lg-5 mr-5 mb-5'>
-			<div class='row'>
-				<div class=' col-12'>
-					<% if (tmp.p_profil) { %>
-					 <a href="/user?id=<%= tmp.uid%>"><img src="<%=tmp.p_profil%>" class="img-thumbnail profil float-left ml-1 mr-1" alt="Photo profil"></a>
-					<% } else if (tmp.img_profil === 1) { %>
-					 <a href="/user?id=<%= tmp.uid%>"><img src="upload/<%= tmp.uid%>-1.png" class="img-thumbnail profil float-left ml-1 mr-1" alt="Photo profil"></a>
-					 <% } else { %>
-					 <a href="/user?id=<%= tmp.uid%>"><img src="upload/noprofil.png" class="img-thumbnail profil float-left ml-1 mr-1" alt="Photo profil"></a>
-					 <% } %>
-	 <span id='login'><%= tmp.login%></span>
-	 <% if (tmp.genre === 1) {%>
-          <img src='./glyphicons_free/glyphicons/png/glyphicons-751-gender-male.png' class='icons'><br/>
-	 <% } else {%>
-          <img src='./glyphicons_free/glyphicons/png/glyphicons-752-gender-female.png' class='icons'><br/>
-	 <% } %>
-	 <%= tmp.firstname%> 
-	 <%= tmp.lastname%><br/>
-	 membre depuis le <%= tmp.inscription%><br/>
-	 <% if (tmp.tlastco > 360) { %>
-		derniere connection : <%= tmp.lastco%><br/>
-	<% } else { %>
-		En ligne.<br />
-		<% } %>
-	 <%= tmp.age%> ans<br/>
-	 <% if (tmp.orientation === 1) {%>
-	 cherche : Homme<br/>
-	 <% } else if (tmp.orientation === 2) {%>
-	 Cherche : Femme<br/>
-	 <% } else {%>
-	 Cherche : Homme/Femme<br/>
-	 <div id='iduser' class='d-none'><%=tmp.uid%></div>
-	 <div id='match'>
-	 <% } if (tmp.tlikeid && tmp.tlikeid !== 0) {%>
-		<a href="/unlike/<%= tmp.uid%>" id='matchen' class='badge badge-primary'>Ne plus matcher</a>
-	 <% } else {%>
-		<a href="/like/<%= tmp.uid%>" id='matchey' class='badge badge-primary'>Matcher</a>
-	 <% }%>
-	 </div>
-				</div>
-			</div>
-					<span class='bio'><%= tmp.bio%></span>
+	<% if (locals.users) {locals.users.forEach(function(tmp) {%>
+	<div class='offset-1 col-10'>
+		<div class='usercenter border border-primary user'>
+			<div class='d-inline-block'>
+				<% if (tmp.p_profil) { %>
+					<a href="/user?id=<%= tmp.uid%>"><img src="<%=tmp.p_profil%>" class="img-thumbnail profil ml-1 mr-1" alt="Photo profil"></a>
+				<% } else if (tmp.img_profil === 1) { %>
+					 <a href="/user?id=<%= tmp.uid%>"><img src="upload/<%= tmp.uid%>-1.png" class="img-thumbnail profil ml-1 mr-1" alt="Photo profil"></a>
+				 <% } else { %>
+					 <a href="/user?id=<%= tmp.uid%>"><img src="upload/noprofil.png" class="img-thumbnail profil ml-1 mr-1" alt="Photo profil"></a>
+				 <% } %>
+			 </div>
+			 <div class='d-inline-block'>
+				 <span id='login'><%= tmp.login%></span>
+				 <% if (tmp.genre === 1) {%>
+					  <img src='./glyphicons_free/glyphicons/png/glyphicons-751-gender-male.png' class='icons'><br/>
+				 <% } else {%>
+					  <img src='./glyphicons_free/glyphicons/png/glyphicons-752-gender-female.png' class='icons'><br/>
+				 <% } %>
+				 <%= tmp.firstname%> 
+				 <%= tmp.lastname%>
+				 <div id='popu'><span class='poputxt'><%=tmp.pop%></span></div>
+			 </div>
+			 <div>
+				membre depuis le <%= tmp.inscription%><br/>
+				<% if (tmp.tlastco > 360) { %>
+				derniere connection : <%= tmp.lastco%><br/>
+				<% } else { %>
+				En ligne.<br />
+				<% } %>
+				 <%= tmp.age%> ans<br/>
+				 <% if (tmp.orientation === 1) {%>
+				 Recherche un Homme<br/>
+				 <% } else if (tmp.orientation === 2) {%>
+				 Recherche une Femme<br/>
+				 <% } else {%>
+				 Recherche un Homme ou une Femme<br/>
+				 <% } %>
+			 </div>
+			 <div id='iduser' class='d-none'><%=tmp.uid%></div>
+			 <div id='match'>
+				 <% if (tmp.tlikeid && tmp.tlikeid !== 0) {%>
+					<a href="/unlike/<%= tmp.uid%>" id='matchen' class='badge badge-primary'>Ne plus matcher</a>
+				 <% } else {%>
+					<a href="/like/<%= tmp.uid%>" id='matchey' class='badge badge-primary'>Matcher</a>
+				 <% }%>
+			 </div>
+			<div class='bio'><%= tmp.bio%></div>
 			<div>
-			<% if (tmp.tags) {tmp.tags.forEach(function(ta) {%>
-				<span class='badge badge-info'><%= ta %> </span>
-			<%})}%>
+				<span> Centre d'interet </span> <br/>
+				<% if (tmp.tags) {tmp.tags.forEach(function(ta) {%>
+					<span class='badge badge-info'><%= ta %> </span>
+				<%})}%>
 			</div>
-			<a href="/addblist/<%= tmp.uid%>" class='badge badge-primary'>Bloquer</a>
-			<a href="/report/<%= tmp.uid%>" class='badge badge-primary'>Reporter faux compte</a>
+			<div class='report float-right'>
+				<a href="/addblist/<%= tmp.uid%>" class='badge badge-primary'>Bloquer</a>
+				<a href="/report/<%= tmp.uid%>" class='badge badge-primary'>Reporter faux compte</a>
+			</div>
 		</div>
 	</div>
-</div>
 	<%})}%>
 <% include ../footer %>

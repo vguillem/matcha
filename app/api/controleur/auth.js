@@ -2,6 +2,8 @@ var bcrypt = require('bcrypt')
 var iploc = require('iplocation')
 var nodemailer = require('nodemailer');
 var Verif = require('../modele/verif.js')
+var vmatcha = 'v.matcha42@gmail.com'
+var vmatchap = '222222qQ'
 
 exports.resetmdppost = (req, res) => {
 	if (req.session.user)
@@ -45,6 +47,83 @@ exports.resetmdppost = (req, res) => {
 	}
 	}
 }
+
+exports.resendmail = (req, res) => {
+	if (req.session.user)
+	{
+		res.redirect('/sall')
+	}
+	else {
+		if (!Verif.verif(req.body.mail, 0, 250)) {
+			req.flash('error', 'Mail invalide.')
+			res.redirect('/login')
+		}
+		else {
+			var auth = require('../modele/auth.js')
+			var i = 0
+			var code = ''
+			var tab = "abcdefghijklmnopkrstuvwxyz1234567890"
+			while (i < 10)
+			{
+				var t = Math.floor(Math.random() * (36 - 1) + 1);
+				code = code + tab[t]
+				i++
+			}
+			auth.resendmail(req.body.mail, code, (rows) => {
+				if (rows[0]) {
+					code = rows[0].login + code
+					var transporter = nodemailer.createTransport({
+					  service: 'Gmail',
+						auth: {
+							user: vmatcha,
+							pass: vmatchap
+						}
+					});
+					var message = 'pour activer votre compte, cliquez sur le lien suivant: http://5.196.225.53:8100/validation?code=' + code
+					var mailOptions = {
+						from: vmatcha,
+						to: req.body.mail,
+						subject: 'Creation compte matcha',
+						text: message
+					};
+					transporter.sendMail(mailOptions, (error, info) => {
+						if (error) {
+							throw error
+						}
+					}); 
+					req.flash('succes', 'Le mail d activation a ete envoye')
+					res.redirect('/login')
+				}
+				else {
+					req.flash('error', 'Mail invalide.')
+					res.redirect('/login')
+				}
+			})
+		}
+	}
+}
+
+
+exports.validation = (req, res) => {
+	if (req.session.user)
+	{
+		res.redirect('/sall')
+	}
+	else {
+		if (!Verif.verif(req.query.code, 0, 40)) {
+			req.flash('error', 'Code invalide.')
+			res.redirect('/login')
+		}
+		else {
+			var auth = require('../modele/auth.js')
+			auth.validation(req.query.code, (rows) => {
+				req.flash('succes', 'Compte active')
+				res.redirect('/login')
+			})
+		}
+	}
+}
+
 
 exports.resetmdp = (req, res) => {
 	if (req.session.user)
@@ -94,13 +173,13 @@ exports.forgot = (req, res) => {
 				var transporter = nodemailer.createTransport({
 				  service: 'Gmail',
 					auth: {
-						user: 'v.matcha42@gmail.com',
-						pass: 'PASSwOrD'
+						user: vmatcha,
+						pass: vmatchap
 					}
 				});
 				var message = 'pour reinitialiser votre mot de passe, cliquez sur le lien suivant: http://5.196.225.53:8100/resetmdp?code=' + code
 				var mailOptions = {
-					from: 'v.matcha42@gmail.com',
+					from: vmatcha,
 					to: req.body.fmail,
 					subject: 'Reset mdp matcha',
 					text: message
@@ -122,7 +201,7 @@ exports.forgot = (req, res) => {
 }
 
 exports.login = (req, res) => {
-	if (req.body.llogin === undefined || req.body.lpasswd === undefined) {
+	if (!Verif.verif(req.body.llogin, 0, 250) || !Verif.verif(req.body.lpasswd, 0, 30)) {
 		req.flash('error', 'Erreur login.')
 		res.redirect('/login')
 	}
@@ -132,22 +211,28 @@ exports.login = (req, res) => {
 		auth.login(req.body.llogin, (rows) => {
 			if (rows[0])
 			{
-				bcrypt.compare(req.body.lpasswd, rows[0].passwd, (err, hash) => {
-					if (hash) {
-						req.session.user = rows[0]
-						req.flash('succes', 'Autentification reussie.')
-						var ip = req.headers['x-forward-for'] || req.connection.remoteAddress
-						iploc(ip, (err, loc) => {
-							auth.iploc(req.session.user.id, loc.city, loc.latitude, loc.longitude)
-						})
-						res.redirect('/sall')
-					}
-					else
-					{
-						req.flash('error', 'Erreur login.')
-						res.redirect('/login')
-					}
-				})
+				if (rows[0].vtoken !== '1') {
+					req.flash('error', 'Compte non active')
+					res.redirect('/resendmail')
+				}
+				else {
+					bcrypt.compare(req.body.lpasswd, rows[0].passwd, (err, hash) => {
+						if (hash) {
+							req.session.user = rows[0]
+							req.flash('succes', 'Autentification reussie.')
+							var ip = req.headers['x-forward-for'] || req.connection.remoteAddress
+							iploc(ip, (err, loc) => {
+								auth.iploc(req.session.user.id, loc.city, loc.latitude, loc.longitude)
+							})
+							res.redirect('/sall')
+						}
+						else
+						{
+							req.flash('error', 'Erreur login.')
+							res.redirect('/login')
+						}
+					})
+				}
 			}
 			else
 			{
@@ -160,29 +245,29 @@ exports.login = (req, res) => {
 
 exports.create = (req, res) => {
 	var auth = require('../modele/auth.js')
-	if (req.body.clogin === undefined || req.body.clogin === '')
+	if (!Verif.verif(req.body.clogin, 0, 20))
 	{
-		req.flash('error', 'Login Vide.')
+		req.flash('error', 'Login Erreur.')
 		res.redirect('/create')
 	}
-	else if (req.body.clastname === undefined || req.body.clastname === '')
+	else if (!Verif.verif(req.body.clastname, 0, 50))
 	{
-		req.flash('error', 'Nom vide.')
+		req.flash('error', 'Nom Erreur.')
 		res.redirect('/create')
 	}
-	else if (req.body.cfirstname === undefined || req.body.cfirstname === '')
+	else if (!Verif.verif(req.body.cfirstname, 0, 50))
 	{
-		req.flash('error', 'Prenom Vide.')
+		req.flash('error', 'Prenom Erreur')
 		res.redirect('/create')
 	}
-	else if (req.body.cmail === undefined || req.body.cmail === '')
+	else if (!Verif.verif(req.body.cmail, 0, 250))
 	{
-		req.flash('error', 'Email Vide.')
+		req.flash('error', 'Email Erreur')
 		res.redirect('/create')
 	}
-	else if (req.body.cpasswd === undefined || req.body.cpasswd === '')
+	else if (!Verif.verif(req.body.cpasswd, 0, 30))
 	{
-		req.flash('error', 'Password Vide.')
+		req.flash('error', 'Password Erreur')
 		res.redirect('/create')
 	}
 	else
@@ -215,8 +300,36 @@ exports.create = (req, res) => {
 						else if (num.test(req.body.cpasswd) && min.test(req.body.cpasswd) && maj.test(req.body.cpasswd) && req.body.cpasswd.length > 7)
 						{
 							bcrypt.hash(req.body.cpasswd, 10, (err, hash) => {
-								auth.create(req.body.clogin, req.body.cfirstname, req.body.clastname, req.body.cmail, hash)
-								req.flash('succes', 'Compte créé.')
+								var code = req.body.clogin
+								var i = 0
+								var tab = "abcdefghijklmnopkrstuvwxyz1234567890"
+								while (i < 10)
+								{
+									var t = Math.floor(Math.random() * (36 - 1) + 1);
+									code = code + tab[t]
+									i++
+								}
+								auth.create(req.body.clogin, req.body.cfirstname, req.body.clastname, req.body.cmail, hash, code)
+									var transporter = nodemailer.createTransport({
+									  service: 'Gmail',
+										auth: {
+											user: vmatcha,
+											pass: vmatchap
+										}
+									});
+									var message = 'pour activer votre compte, cliquez sur le lien suivant: http://5.196.225.53:8100/validation?code=' + code
+									var mailOptions = {
+										from: vmatcha,
+										to: req.body.cmail,
+										subject: 'Creation compte matcha',
+										text: message
+									};
+									transporter.sendMail(mailOptions, (error, info) => {
+										if (error) {
+											throw error
+										}
+									}); 
+								req.flash('succes', 'Compte créé, un mail d activation a ete envoye')
 							})
 							res.redirect('/')
 						}
@@ -239,9 +352,9 @@ exports.compte = (req, res) => {
 	var lastname = req.session.user.lastname
 	var pass = req.session.user.passwd
 	var mail = req.session.user.mail
-	if (Verif.verif(req.body.clastname, 0, 250))
+	if (Verif.verif(req.body.clastname, 0, 50))
 		lastname = req.body.clastname
-	if (Verif.verif(req.body.cfirstname, 0, 250))
+	if (Verif.verif(req.body.cfirstname, 0, 50))
 		firstname = req.body.cfirstname
 	if (Verif.verif(req.body.cemail, 0, 250))
 		mail = req.body.cemail

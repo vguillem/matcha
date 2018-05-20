@@ -4,7 +4,7 @@ exports.chat = (req, res) => {
 	var chat = require('../modele/chat.js')
 	var auth = require('../modele/auth.js')
 	var login = req.query.id
-	if (!Verif.verif(login, 0, 50)) {
+	if (!Verif.verif(login, 0, 20)) {
 		res.render('404')
 	}
 	else {
@@ -34,7 +34,6 @@ exports.chats = (req, res) => {
 	var chat = require('../modele/chat.js')
 	chat.allchat(req.session.user.id, (rows) => {
 		if (rows){
-			console.log(rows)
 			res.locals.chats = rows
 		}
 		res.render('chat/chats')
@@ -43,9 +42,10 @@ exports.chats = (req, res) => {
 
 
 exports.ichat = (req, res) => {
-	var chat = require('../modele/chat.js')
+	if (Verif.verif(req.query.login, 0, 20)) {
 		req.session.ichat= req.query.login
-		res.redirect('/chats')
+	}
+	res.redirect('/chats')
 }
 
 

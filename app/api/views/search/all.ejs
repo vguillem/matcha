@@ -56,7 +56,7 @@
 <hr>
 <form class='container offset-sm-1 col-sm-10'>
 	<div class='row'>
-		<% if (locals.users && locals.users[0]) {locals.users.forEach(function(tmp) { if (tmp.show === 1) {%>
+		<% if (locals.users && locals.users[0]) {locals.users.forEach(function(tmp) { if (tmp.show === 1 && tmp.img_profil === 1) {%>
 		<div class='ml-5 mb-5 fiche'>
 			<div class='row'>
 				<div class=' col-12'>

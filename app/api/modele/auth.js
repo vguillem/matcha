@@ -3,9 +3,9 @@ var bdd = require('../config/database')
 
 class Auth {
 
-	static create (login, firstname, lastname, mail, passwd) {
-		var sql = "INSERT INTO users SET login= ?, firstname= ?, lastname= ?, mail= ?, passwd= ?, date=NOW()"
-		var inserts = [login, firstname, lastname, mail, passwd]
+	static create (login, firstname, lastname, mail, passwd, code) {
+		var sql = "INSERT INTO users SET login= ?, firstname= ?, lastname= ?, mail= ?, passwd= ?, date=NOW(), vtoken=?"
+		var inserts = [login, firstname, lastname, mail, passwd, code]
 		bdd.query(mysql.format(sql, inserts))
 	}
 
@@ -30,11 +30,37 @@ class Auth {
 		bdd.query(mysql.format(sql, inserts))
 	}
 
+	static validation (code, cb) {
+		var sql = "UPDATE users SET vtoken='1' WHERE vtoken= ? LIMIT 1"
+		var inserts = [code]
+		bdd.query(mysql.format(sql, inserts), (err, rows) => {
+			if (err) throw err
+			cb(rows)
+		})
+	}
+
+
 	static getcode (code, cb) {
 		var sql = "SELECT * FROM rmdp WHERE code= ? LIMIT 1"
 		var inserts = [code]
 		bdd.query(mysql.format(sql, inserts), (err, rows) => {
 			if (err) throw err
+			cb(rows)
+		})
+	}
+
+
+	static resendmail (mail, code, cb) {
+		var sql = "SELECT * FROM users WHERE mail= ? AND vtoken!='1' LIMIT 1"
+		var inserts = [mail]
+		bdd.query(mysql.format(sql, inserts), (err, rows) => {
+			if (err) throw err
+			if (rows[0])
+			{
+				var sql = "UPDATE users SET vtoken=? WHERE mail= ? LIMIT 1"
+				var inserts = [rows[0].login + code, mail]
+				bdd.query(mysql.format(sql, inserts))
+			}
 			cb(rows)
 		})
 	}

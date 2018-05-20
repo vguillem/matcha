@@ -91,6 +91,14 @@ class Profil {
 		var inserts = [id]
 		bdd.query(mysql.format(sql, inserts))
 	}
+
+
+	static img_profil_ko (id) {
+		var sql = "UPDATE profil SET img_profil='0' where id_user= ?"
+		var inserts = [id]
+		bdd.query(mysql.format(sql, inserts))
+	}
+
 	static create (login, age, genre, bio, orientation) {
 		var sql = "INSERT INTO profil SET id_user= ?, age= ?, genre= ?, orientation= ?, bio= ?"
 		var inserts = [login, age, genre, orientation, bio]

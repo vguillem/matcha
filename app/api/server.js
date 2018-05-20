@@ -21,6 +21,7 @@ var session = Session({
 	cookie: {secure: false}
 })
 var notif = require('./modele/notif')
+var csurf = require('csurf')
 
 // Template
 app.set('view engine', 'ejs')
@@ -35,7 +36,6 @@ app.use(session)
 app.use(require('./middleware/flash'))
 app.use(require('./middleware/login'))
 app.use(require('./middleware/secu'))
-app.use(require('./middleware/profil'))
 app.use(require('./middleware/lastco'))
 app.use(require('./middleware/notif'))
 app.use(require('./middleware/lastpage'))
@@ -86,6 +86,21 @@ app.post('/create', (req, res) => {
 
 app.get('/login', (req, res) => {
 	res.render('auth/login')
+})
+
+
+app.get('/validation', (req, res) => {
+	Auth.validation(req, res)
+})
+
+
+app.get('/resendmail', (req, res) => {
+	res.render('auth/resendmail')
+})
+
+
+app.post('/resendmail', (req, res) => {
+	Auth.resendmail(req, res)
 })
 
 app.post('/login', (req, res) => {
@@ -148,6 +163,11 @@ app.get('/sall', (req, res) => {
 	Search.sallpost(req, res)
 })
 
+app.post('/search', (req, res) => {
+	Search.slogin(req, res)
+})
+
+
 app.post('/sall', (req, res) => {
 	Search.sallpost(req, res)
 })
@@ -194,11 +214,11 @@ app.get('/like/:id', (req, res) => {
 		})
 	}
 })
-
+/*
 app.get('/chat', (req, res) => {
 	Chat.chat(req, res)
 })
-
+*/
 
 app.get('/chats', (req, res) => {
 	Chat.chats(req, res)
@@ -241,6 +261,12 @@ app.get('/report/:id', (req, res) => {
 
 app.get('/ichat', (req, res) => {
 	Chat.ichat(req, res)
+})
+
+
+app.get('/closechat', (req, res) => {
+	req.session.ichat = undefined;
+	res.redirect(req.session.lastpage)
 })
 
 

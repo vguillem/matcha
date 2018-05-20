@@ -18,7 +18,7 @@ bdd.connect((err) => {
 		console.log('Use matcha OK');
 	})
 
-	bdd.query("CREATE TABLE IF NOT EXISTS users (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, login VARCHAR(255) UNIQUE, mail VARCHAR(255) UNIQUE, firstname VARCHAR(255), lastname VARCHAR(255), passwd TEXT, date DATE, lastco DATETIME)", (err, result) => {
+	bdd.query("CREATE TABLE IF NOT EXISTS users (id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY, login VARCHAR(255) UNIQUE, mail VARCHAR(255) UNIQUE, firstname VARCHAR(255), lastname VARCHAR(255), passwd TEXT, date DATE, lastco DATETIME, vtoken VARCHAR(255) DEFAULT '0')", (err, result) => {
 		if (err) throw err;
 		console.log('table users ok');
 	});

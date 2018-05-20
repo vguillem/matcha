@@ -3,7 +3,7 @@
 <p class='historique'>Mes Matches</p>
 	<% if (locals.chats) {locals.chats.forEach(function(tmp) {%>
 		<div class='hist_action'>
-			<a href='/ichat?id=<%=tmp.id_likeur%>&login=<%=tmp.login%>'>Ouvrir le chat avec : <%=tmp.login%></a>
+			<a href='/ichat?login=<%=tmp.login%>'>Ouvrir le chat avec : <%=tmp.login%></a>
 		</div>
 	<% })} %>
 </div>

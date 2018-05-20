@@ -1,4 +1,5 @@
 var fs = require('fs')
+var Verif = require('../modele/verif.js')
 var getCoords = require ('city-to-coords')
 var readchunk = require('read-chunk')
 var isPng = require('is-png')
@@ -7,39 +8,52 @@ exports.unlike = (req, res) => {
 	var hist = require('../modele/hist.js')
 	var pro = require('../modele/profil.js')
 	var notif = require('../modele/notif.js')
-	pro.unlike(req.session.user.id, req.params.id)
-	if (req.session.lastpage.substr(0, 5) !== '/user') {
-		hist.unlike(req.session.user.id, req.params.id)
-		pro.uppop(req.params.id, -10)
-		pro.getlike(req.session.user.id, req.params.id, (rows) => {
-			if (rows[0])
-				notif.munlike(req.session.user.id, req.params.id)
-			else
-				notif.unlike(req.session.user.id, req.params.id)
-		
-			res.redirect(req.session.lastpage)
+	if (!Verif.verif(req.params.id, 1, 0)) {
+		res.redirect('/sall')
+	}
+	else {
+		pro.checklike (req.session.user.id, req.params.id, (rows1) => {
+			if (rows1[0]) {
+				pro.uppop(req.params.id, -10)
+				pro.unlike(req.session.user.id, req.params.id)
+				if (req.session.lastpage.substr(0, 5) !== '/user') {
+					hist.unlike(req.session.user.id, req.params.id)
+					pro.getlike(req.session.user.id, req.params.id, (rows) => {
+						if (rows[0])
+							notif.munlike(req.session.user.id, req.params.id)
+						else
+							notif.unlike(req.session.user.id, req.params.id)
+					})
+				}
+			}
 		})
-		}
-	else
 		res.redirect(req.session.lastpage)
+	}
 }
 
 exports.like = (req, res) => {
-	var pro = require('../modele/profil.js')
-	var hist = require('../modele/hist.js')
-	var notif = require('../modele/notif.js')
-	pro.unlike(req.session.user.id, req.params.id)
-	pro.like(req.session.user.id, req.params.id)
-	hist.like(req.session.user.id, req.params.id)
-	pro.uppop(req.params.id, 10)
-	pro.getlike(req.session.user.id, req.params.id, (rows) => {
-		if (rows[0])
-			notif.mlike(req.session.user.id, req.params.id)
-		else
-			notif.like(req.session.user.id, req.params.id)
-	
-		res.redirect(req.session.lastpage)
-	})
+	if (!Verif.verif(req.params.id, 1, 0)) {
+		res.redirect('/sall')
+	}
+	else {
+		var pro = require('../modele/profil.js')
+		var hist = require('../modele/hist.js')
+		var notif = require('../modele/notif.js')
+		pro.checklike (req.session.user.id, req.params.id, (rows1) => {
+			if (!rows1[0]) {
+				pro.like(req.session.user.id, req.params.id)
+				hist.like(req.session.user.id, req.params.id)
+				pro.uppop(req.params.id, 10)
+				pro.getlike(req.session.user.id, req.params.id, (rows) => {
+					if (rows[0])
+						notif.mlike(req.session.user.id, req.params.id)
+					else
+						notif.like(req.session.user.id, req.params.id)
+				})
+			}
+			res.redirect(req.session.lastpage)
+		})
+	}
 }
 
 
@@ -57,7 +71,7 @@ exports.getnotif = (req, res) => {
 
 exports.localisation = (req, res) => {
 	var pro = require('../modele/profil.js')
-	if (req.body.pcoordonnees) {
+	if (Verif.verif(req.body.pcoordonnees, 0, 250)) {
 		getCoords(req.body.pcoordonnees)
 		.then((coords) => {
 			pro.localisation(req.session.user.id, req.body.pcoordonnees, coords.lat, coords.lng)
@@ -74,9 +88,48 @@ exports.localisation = (req, res) => {
 
 exports.getprofil = (req, res) => {
 	var pro = require('../modele/profil.js')
-	if (!req.session.user)
-		res.render('profil/profil')
-	else {
+			try {
+				fs.accessSync('public/upload/' + req.session.user.id + '-1.png')
+				var tmp = 'upload/' + req.session.user.id + '-1.png'
+				res.locals.profil = tmp
+				} catch(err) {
+				}
+			var promise = new Promise((resolve) => {
+			try {
+				fs.accessSync('public/upload/' + req.session.user.id + '-2.png')
+				var tmp = 'upload/' + req.session.user.id + '-2.png'
+				res.locals.imgprof1 = tmp
+				} catch(err) {}
+				resolve('2')
+			})
+			var promise = new Promise((resolve) => {
+			try {
+				fs.accessSync('public/upload/' + req.session.user.id + '-3.png')
+				var tmp = 'upload/' + req.session.user.id + '-3.png'
+				res.locals.imgprof2 = tmp
+				} catch(err) {}
+				resolve('3')
+			})
+			var promise = new Promise((resolve) => {
+			try {
+				fs.accessSync('public/upload/' + req.session.user.id + '-4.png')
+				var tmp = 'upload/' + req.session.user.id + '-4.png'
+				res.locals.imgprof3 = tmp
+				} catch(err) {}
+				resolve('4')
+			})
+			var promise = new Promise((resolve) => {
+			try {
+				fs.accessSync('public/upload/' + req.session.user.id + '-5.png')
+				var tmp = 'upload/' + req.session.user.id + '-5.png'
+				res.locals.imgprof4 = tmp
+				} catch(err) {}
+				resolve('5')
+			})
+
+		console.log(res.locals.profil)
+
+
 		pro.getprofil (req.session.user.id, (rows) => {
 			if (rows[0])
 			{
@@ -93,31 +146,28 @@ exports.getprofil = (req, res) => {
 				res.render('profil/profil')
 			}
 		})
-	}
 }
 
 exports.deltag = (req, res) => {
-	var pro = require('../modele/profil.js')
-	if (!req.session.user)
-		res.redirect('/profil')
+	if (!Verif.verif(req.params.id, 0, 27)) {
+		res.redirect('/sall')
+	}
 	else {
+		var pro = require('../modele/profil.js')
 		pro.deltag(req.session.user.id, req.params.id)
 		res.redirect('/profil')
 	}
 }
 
 exports.addtag = (req, res) => {
-	if (req.body.ptag)
+	if (Verif.verif(req.body.ptag, 0, 27))
 	{
 		var pro = require('../modele/profil.js')
-		if (req.body.ptag.length > 27)
-		{
-			req.flash('error', 'Tag invalide')
-		}
-		else {
-			pro.addtag (req.session.user.id, req.body.ptag)
-			req.flash('succes', 'Tag ajoute')
-		}
+		pro.addtag (req.session.user.id, req.body.ptag)
+		req.flash('succes', 'Tag ajoute')
+	}
+	else {
+		req.flash('error', 'Tag invalide')
 	}
 	res.redirect('/profil')
 }
@@ -150,6 +200,8 @@ exports.upload = (req, res) => {
 						var type = readchunk.sync(pathimg + finimg, 0, 8)
 						if (!isPng(type))
 						{
+							if (finimg === '-1.png')
+								pro.img_profil_ko(req.session.user.id)
 							allimgok = 2
 							fs.unlink(pathimg + finimg, (err) => {
 								resolve('erreur')
@@ -191,19 +243,19 @@ exports.profil = (req, res) => {
 			var genre
 			var bio
 			var orientation
-			if (req.body.pbio === undefined || req.body.pbio === '')
+			if (!Verif.verif(req.body.pbio, 0, 250))
 				bio = rows[0].bio
 			else
 				bio = req.body.pbio
-			if (req.body.page === undefined || req.body.page === '' || req.body.page < 18 || req.body.page > 130)
+			if (!Verif.verif(req.body.page, 1, 0) || req.body.page < 18 || req.body.page > 130)
 				age = rows[0].age
 			else
 				age = req.body.page
-			if (req.body.pgenre === undefined || req.body.pgenre === '')
+			if (!Verif.verif(req.body.pgenre, 1, 0) || req.body.pgenre < 1 || req.body.pgenre > 2)
 				genre = rows[0].genre
 			else
 				genre = req.body.pgenre
-			if (req.body.porientation === undefined || req.body.porientation === '')
+			if (!Verif.verif(req.body.porientation, 1, 0) || req.body.porientation < 1 || req.body.porientation > 3)
 				orientation = rows[0].orientation
 			else
 				orientation = req.body.porientation
@@ -211,22 +263,22 @@ exports.profil = (req, res) => {
 			req.flash('succes', 'Profil mis a jour.')
 			res.redirect('/profil')
 		}
-		else if (req.body.pbio === undefined || req.body.pbio === '')
+		else if (!Verif.verif(req.body.pbio, 0, 250))
 		{
 			req.flash('error', 'Biographie vide.')
 			res.redirect('/profil')
 		}
-		else if (req.body.page === undefined || req.body.page === '' || req.body.page < 18 || req.body.page > 130)
+		else if (!Verif.verif(req.body.page, 1, 0) || req.body.page < 18 || req.body.page > 130)
 		{
 			req.flash('error', 'Age incorrect.')
 			res.redirect('/profil')
 		}
-		else if (req.body.pgenre === undefined || req.body.pgenre === '')
+		else if (!Verif.verif(req.body.pgenre, 1, 0) || req.body.page < 1 || req.body.page > 2)
 		{
 			req.flash('error', 'Genre vide.')
 			res.redirect('/profil')
 		}
-		else if (req.body.porientation === undefined || req.body.porientation === '')
+		else if (!Verif.verif(req.body.porientation, 1, 0) || req.body.page < 1 || req.body.page > 3)
 		{
 			req.flash('error', 'Orientation vide.')
 			res.redirect('/profil')

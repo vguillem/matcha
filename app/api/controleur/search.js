@@ -1,12 +1,4 @@
-function verif(data, type, len){
-	if (data === undefined || data === '' || (data.length > len && len !== 0))
-		return false
-	if (type === 1) {
-		if (isNaN(data))
-			return false
-	}
-	return true
-}
+var Verif = require('../modele/verif.js')
 function sortBynbtag( a, b )
 {
 	var x = b.nbtag;
@@ -43,21 +35,26 @@ exports.sallpost = (req, res) => {
 		pro.getprofil (req.session.user.id, (rows) => {
 			if (rows[0] && rows[0].bio && rows[0].genre && rows[0].orientation && rows[0].lat && rows[0].lng)
 			{
-				if (res.locals.profil)
+				if (rows[0].img_profil === 1)
 				{
 					if (rows[0].idtag)
 						var filtre_tag = rows[0].idtag.split(',')
-					if (!verif(agemin, 1, 1000000000))
+					if (!Verif.verif(agemin, 1, 0))
+					{
 						agemin = rows[0].age - 10
-					if (!verif(agemax, 1, 1000000000))
+						if (agemin < 18) {
+							agemin = 18
+						}
+					}
+					if (!Verif.verif(agemax, 1, 0))
 						agemax = rows[0].age + 10
-					if (!verif(distmin, 1, 1000000000))
+					if (!Verif.verif(distmin, 1, 0))
 						distmin = 0
-					if (!verif(distmax, 1, 1000000000))
+					if (!Verif.verif(distmax, 1, 0))
 						distmax = 100
-					if (!verif(popmin, 1, 1000000000))
+					if (!Verif.verif(popmin, 1, 0))
 						popmin = 0
-					if (!verif(popmax, 1, 1000000000))
+					if (!Verif.verif(popmax, 1, 0))
 						popmax = 1000
 					search.postall (req.session.user.id, rows[0].genre, rows[0].orientation, rows[0].lat, rows[0].lng, agemin, agemax, distmin, distmax, popmin, popmax, tri, (rows2) => {
 						var i = 0
@@ -175,28 +172,19 @@ exports.user = (req, res) => {
 	pro.getprofil (req.session.user.id, (rows) => {
 		if (rows[0] && rows[0].bio && rows[0].genre && rows[0].orientation && rows[0].lat && rows[0].lng)
 		{
-			if (res.locals.profil)
+			if (rows[0].img_profil === 1)
 			{
 				search.user(rows[0].lng, rows[0].lat, id, req.session.user.id, (rows3) => {
 					if (rows3[0]) {
-						chat.getchat(req.session.user.login, rows3[0].login, req.session.user.id, id, (rows2) => {
-							var i = 0
-							while (rows2[i]) {
-								if (rows2[i].login_posteur === req.session.user.login)
-									rows2[i].login_posteur = 'Vous'
-								i++
-							}
-							res.locals.chat = rows2.reverse()
-							hist.v_user(req.session.user.id, rows3[0].uid)
-							notif.v_user(req.session.user.id, rows3[0].uid)
-							pro.uppop(id, 1)
-							if (rows3[0].tag)
-								rows3[0].tags = rows3[0].tag.split(',')
-							else
-								rows3[0].tags = 0
-							res.locals.users = rows3
-							res.render('search/user')
-						})
+						hist.v_user(req.session.user.id, rows3[0].uid)
+						notif.v_user(req.session.user.id, rows3[0].uid)
+						pro.uppop(id, 1)
+						if (rows3[0].tag)
+							rows3[0].tags = rows3[0].tag.split(',')
+						else
+							rows3[0].tags = 0
+						res.locals.users = rows3
+						res.render('search/user')
 					}
 					else
 						res.redirect('/sall')
@@ -214,4 +202,18 @@ exports.user = (req, res) => {
 			res.redirect('/profil')
 		}
 	})
+}
+
+exports.slogin = (req, res) => {
+var search = require('../modele/search.js')
+if (Verif.verif(req.body.search, 0, 20)) {
+	search.slogin(req.body.search, (rows) => {
+		if (rows[0])
+			res.locals.slogin = rows
+		res.render('search/search')
+	})
+}
+else {
+	res.redirect('/sall')
+}
 }

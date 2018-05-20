@@ -1,0 +1,12 @@
+<% include ../header %>
+<div class='col-2 history d-none d-sm-block d-md-block'>
+<p class='historique'>Utilisateurs trouves :</p>
+	<% if (locals.slogin) {locals.slogin.forEach(function(tmp) {%>
+		<div class='hist_action'>
+			<a href='/user?id=<%=tmp.id%>'><%= tmp.login%></a>
+		</div>
+	<% })} else { %>
+	<p> aucun utilisateur correspondant.</p>
+	<% } %>
+</div>
+<% include ../footer %>

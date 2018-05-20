@@ -3,7 +3,7 @@
 <p class='historique'>Notification</p>
 	<% if (locals.notif) {locals.notif.forEach(function(tmp) {%>
 		<div class='hist_action'>
-			<a href='/user/<%=tmp.id_notifieur%>'><%= tmp.login%></a> : <%= tmp.action %> le <%= tmp.heure %>
+			<a href='/user?id=<%=tmp.notifieur%>'><%= tmp.login%></a> : <%= tmp.action %> le <%= tmp.heure %>
 		</div>
 	<% })} %>
 </div>

@@ -1,12 +1,22 @@
 var mysql = require('mysql');
 var bdd = require('../config/database')
-var sel = "SELECT users.id AS uid, GROUP_CONCAT(tag.id) AS idtag, GROUP_CONCAT(tag.tag) AS tag, users.login AS login, profil.genre AS genre, profil.age AS age, profil.bio AS bio, DATE_FORMAT(users.lastco, '%d/%m/%Y %Hh%i') AS lastco, (NOW() - users.lastco) AS tlastco, users.firstname AS firstname, users.lastname AS lastname, DATE_FORMAT(users.date, '%d/%m/%Y') AS inscription, profil.orientation AS orientation, profil.img_profil AS img_profil,profil.p_profil AS p_profil, tlike.id AS tlikeid, profil.ville AS ville, ROUND(ST_Distance_Sphere(point(?, ?), point(profil.lng, profil.lat)) / 1000) AS distance"
+var sel = "SELECT users.id AS uid, GROUP_CONCAT(tag.id) AS idtag, GROUP_CONCAT(tag.tag) AS tag, users.login AS login, profil.genre AS genre, profil.age AS age, profil.bio AS bio, DATE_FORMAT(users.lastco, '%d/%m/%Y %Hh%i') AS lastco, profil.pop AS pop, (NOW() - users.lastco) AS tlastco, users.firstname AS firstname, users.lastname AS lastname, DATE_FORMAT(users.date, '%d/%m/%Y') AS inscription, profil.orientation AS orientation, profil.img_profil AS img_profil,profil.p_profil AS p_profil, tlike.id AS tlikeid, profil.ville AS ville, ROUND(ST_Distance_Sphere(point(?, ?), point(profil.lng, profil.lat)) / 1000) AS distance"
 
 class Search {
 
+	static slogin (login, cb) {
+		var log = '%' + login.toLowerCase() + '%'
+		var sql = "SELECT id, login FROM users where LOWER(login) LIKE ?"
+		var inserts = [log]
+		bdd.query(mysql.format(sql, inserts), (err, rows) => {
+			if (err) throw err
+			cb(rows)
+		})
+	}
+
 	static  postall (id, genre, orientation, lato, lngo, agemin, agemax, distmin, distmax, popmin, popmax, tri, cb) {
 		if (!tri)
-			tri = 'uid'
+			tri = 'pop'
 		else if (tri !== 'distance' && tri !== 'pop' && tri !== 'age')
 			tri = 'uid'
 		if (orientation === 3)

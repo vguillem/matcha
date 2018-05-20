@@ -9,6 +9,7 @@ body {
 background: url(upload/connect.jpg) no-repeat center fixed;
 			-webkit-background-size: cover;
 			background-size: cover;
+			z-index:1;
 }
 
 .footer {
@@ -21,7 +22,7 @@ height:60px;
 }
 
 .hfcolor {
-	background-color: rgba(160, 211, 248, 0.6);
+	background-color: rgba(160, 211, 248, 0.93);
 }
 
 .containers {
@@ -63,7 +64,6 @@ display: block;
 .chatlogin {
 	width:100%;
 	height:6%;
-	text-align:center;
 	background-color: rgb(51, 153, 255);
 	border-radius: 10px 10px 1px 1px;
 	border-width:2px !important;
@@ -134,13 +134,14 @@ button {
 
 .bio {
 	padding:10px;
+	margin:5px;
 	border-radius: 10px 10px 10px 10px;
 	background-color: rgba(160, 211, 248, 0.6);
 }
 
 #zonetmpnotif {
 	position:fixed;
-	bottom: 40px;
+	top: 50px;
 	right:15px;
 }
 
@@ -163,11 +164,83 @@ button {
 	z-index:10;
 }
 
-#iframechat {
+#icorp {
 	height:94%;
 }
 
 .fixbot {
 	position:absolute;
 	bottom:0px;
+}
+
+
+.chatsend {
+	width:100%;
+	background-color: rgb(51, 153, 255);
+}
+
+#message {
+	height:350px;%;
+	overflow:auto;
+}
+
+.messagelogin {
+	color: rgb(204, 0, 0);
+	font-weight: bold;
+}
+
+
+.messagecontent {
+	color: rgb(204, 0, 0);
+	font-style:italic ;
+}
+
+.Vous {
+	color: rgb(0, 0, 255);
+}
+
+#ichats {
+	width:30%;
+}
+
+#m {
+	margin-left:2px;
+	width:65%;
+}
+
+#popu {
+	width: 50px;
+	height: 44px;
+	text-shadow: white 0px 0px 2px;
+	font-size: 16px;
+	background-size: 100%;
+	background-image: url(pop.png);
+	text-align: center;
+	padding-top:3px;
+}
+
+.usercenter {
+	width:400px;
+	margin:auto;
+}
+
+@media screen and (max-width: 450px) {
+	.usercenter {
+		width:100%;
+	}
+}
+
+.closec {
+	width;9%;
+	text-align:right;
+	font-size: 1.5rem;
+	font-weight: 700;
+	line-height: 1;
+	text-shadow: 0 1px 0 #fff;
+	opacity: .5;
+}
+
+.chatlogintxt {
+	width:91%;
+	text-align:center;
 }
