@@ -1,4 +1,7 @@
 var Verif = require('../modele/verif.js')
+var nodemailer = require('nodemailer');
+var vmatcha = 'v.matcha42@gmail.com'
+var vmatchap = 'PaSwOrD'
 
 exports.addblist = (req, res) => {
 	if (!Verif.verif(req.params.id, 1, 0))
@@ -29,8 +32,34 @@ exports.dellblist = (req, res) => {
 
 
 exports.report = (req, res) => {
-	req.flash('succes', 'une alerte a ete envoye')
-	res.redirect(req.session.lastpage)
+	if (!Verif.verif(req.params.id, 1, 0))
+	{
+		res.redirect('/sall')
+	}
+	else {
+		var transporter = nodemailer.createTransport({
+		  service: 'Gmail',
+			auth: {
+				user: vmatcha,
+				pass: vmatchap
+			}
+		});
+		var message = 'l utilisateur : ' + req.session.user.login + ' a signlale un faux compte. id : ' + req.params.id
+		var mailOptions = {
+			from: vmatcha,
+			to: vmatcha,
+			subject: 'Creation compte matcha',
+			text: message
+		};
+		transporter.sendMail(mailOptions, (error, info) => {
+			if (error) {
+				throw error
+			}
+		}); 
+
+		req.flash('succes', 'une alerte a ete envoye')
+		res.redirect(req.session.lastpage)
+	}
 }
 
 

@@ -58,6 +58,7 @@ exports.sallpost = (req, res) => {
 						popmax = 1000
 					search.postall (req.session.user.id, rows[0].genre, rows[0].orientation, rows[0].lat, rows[0].lng, agemin, agemax, distmin, distmax, popmin, popmax, tri, (rows2) => {
 						var i = 0
+						var noresult = false
 						while (rows2[i]) {
 							rows2[i].show = 1
 							if (rows2[i].tag)
@@ -113,8 +114,11 @@ exports.sallpost = (req, res) => {
 										if (ctag.length !== rows2[i].dell)
 											rows2[i].show = 0
 									}
-									else if (rows2[i].dell !== 1)
+									else if (rows2[i].dell !== 1) {
 										rows2[i].show = 0
+									}
+									if (rows2[i].show !== 0)
+										noresult = true
 								}
 							}
 							i++
@@ -124,6 +128,8 @@ exports.sallpost = (req, res) => {
 							res.locals.users = rows2
 							if (tri === 'tag')
 								res.locals.users = rows2.sort(sortBynbtag)
+							if (ctag && !noresult)
+								res.locals.users = undefined
 						}
 						hist.get_hist(req.session.user.id, (rhist) => {
 							if (rhist[0])
@@ -179,7 +185,6 @@ exports.user = (req, res) => {
 					fs.accessSync('public/upload/' + id + '-2.png')
 					var tmp = 'upload/' + id + '-2.png'
 					res.locals.imgu1 = tmp
-					console.log(tmp)
 					} catch(err) {}
 				try {
 					fs.accessSync('public/upload/' + id + '-3.png')
