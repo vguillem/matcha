@@ -162,6 +162,7 @@ exports.sallpost = (req, res) => {
 
 exports.user = (req, res) => {
 	var pro = require('../modele/profil.js')
+	var fs = require('fs')
 	var chat = require('../modele/chat.js')
 	var search = require('../modele/search.js')
 	var hist = require('../modele/hist.js')
@@ -174,6 +175,27 @@ exports.user = (req, res) => {
 		{
 			if (rows[0].img_profil === 1)
 			{
+				try {
+					fs.accessSync('public/upload/' + id + '-2.png')
+					var tmp = 'upload/' + id + '-2.png'
+					res.locals.imgu1 = tmp
+					console.log(tmp)
+					} catch(err) {}
+				try {
+					fs.accessSync('public/upload/' + id + '-3.png')
+					var tmp = 'upload/' + id + '-3.png'
+					res.locals.imgu2 = tmp
+					} catch(err) {}
+				try {
+					fs.accessSync('public/upload/' + id + '-4.png')
+					var tmp = 'upload/' + id + '-4.png'
+					res.locals.imgu3 = tmp
+					} catch(err) {}
+				try {
+					fs.accessSync('public/upload/' + id + '-5.png')
+					var tmp = 'upload/' + id + '-5.png'
+					res.locals.imgu4 = tmp
+					} catch(err) {}
 				search.user(rows[0].lng, rows[0].lat, id, req.session.user.id, (rows3) => {
 					if (rows3[0]) {
 						hist.v_user(req.session.user.id, rows3[0].uid)

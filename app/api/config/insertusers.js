@@ -259,7 +259,7 @@ bcrypt.hash('111111qQ', 10, (err, hash) => {
 		var firstname = ffirstname[f]
 		var lastname = alastname[l]
 		
-		var sql = "INSERT INTO users SET login= ?, firstname= ?, lastname= ?, mail= ?, passwd= ?, date=NOW()"
+		var sql = "INSERT INTO users SET login= ?, firstname= ?, lastname= ?, mail= ?, passwd= ?, date=NOW(), lastco=NOW(), vtoken='1'"
 		var inserts = [firstname + "_" + i, firstname, lastname, firstname + "." + lastname + i + "@gma.com", hash]
 		bdd.query(mysql.format(sql, inserts))
 		i++;
@@ -271,7 +271,7 @@ bcrypt.hash('111111qQ', 10, (err, hash) => {
 		var l = Math.floor(Math.random() * (150));
 		var lastname = alastname[l]
 		
-		var sql = "INSERT INTO users SET login= ?, firstname= ?, lastname= ?, mail= ?, passwd= ?, date=NOW()"
+		var sql = "INSERT INTO users SET login= ?, firstname= ?, lastname= ?, mail= ?, passwd= ?, date=NOW(), lastco=NOW(), vtoken='1'"
 		var inserts = [firstname + "_" + i, firstname, lastname, firstname + "." + lastname + i + "@gma.com", hash]
 		bdd.query(mysql.format(sql, inserts))
 		i++;

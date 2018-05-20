@@ -3,6 +3,7 @@ var Verif = require('../modele/verif.js')
 var getCoords = require ('city-to-coords')
 var readchunk = require('read-chunk')
 var isPng = require('is-png')
+var isJpg = require('is-jpg')
 
 exports.unlike = (req, res) => {
 	var hist = require('../modele/hist.js')
@@ -94,41 +95,26 @@ exports.getprofil = (req, res) => {
 				res.locals.profil = tmp
 				} catch(err) {
 				}
-			var promise = new Promise((resolve) => {
 			try {
 				fs.accessSync('public/upload/' + req.session.user.id + '-2.png')
 				var tmp = 'upload/' + req.session.user.id + '-2.png'
 				res.locals.imgprof1 = tmp
 				} catch(err) {}
-				resolve('2')
-			})
-			var promise = new Promise((resolve) => {
 			try {
 				fs.accessSync('public/upload/' + req.session.user.id + '-3.png')
 				var tmp = 'upload/' + req.session.user.id + '-3.png'
 				res.locals.imgprof2 = tmp
 				} catch(err) {}
-				resolve('3')
-			})
-			var promise = new Promise((resolve) => {
 			try {
 				fs.accessSync('public/upload/' + req.session.user.id + '-4.png')
 				var tmp = 'upload/' + req.session.user.id + '-4.png'
 				res.locals.imgprof3 = tmp
 				} catch(err) {}
-				resolve('4')
-			})
-			var promise = new Promise((resolve) => {
 			try {
 				fs.accessSync('public/upload/' + req.session.user.id + '-5.png')
 				var tmp = 'upload/' + req.session.user.id + '-5.png'
 				res.locals.imgprof4 = tmp
 				} catch(err) {}
-				resolve('5')
-			})
-
-		console.log(res.locals.profil)
-
 
 		pro.getprofil (req.session.user.id, (rows) => {
 			if (rows[0])
@@ -176,62 +162,49 @@ exports.upload = (req, res) => {
 	var fstream
 	var pro = require('../modele/profil.js')
 	req.pipe(req.busboy)
-	var promises = []
-	var allimgok = 1
 	req.busboy.on('file', (fieldname, file, filename) => {
-		var promise = new Promise((resolve) => {
-			if (filename !== '') {
-				var pathimg = __dirname + '/../public/upload/' + req.session.user.id
-				var finimg = false
-				if (fieldname === 'img1')
-					finimg = '-1.png'
-				else if (fieldname === 'img2')
-					finimg = '-2.png'
-				else if (fieldname === 'img3')
-					finimg = '-3.png'
-				else if (fieldname === 'img4')
-					finimg = '-4.png'
-				else if (fieldname === 'img5')
-					finimg = '-5.png'
-				if (finimg) {
-					fstream = fs.createWriteStream(pathimg + finimg)
-					file.pipe(fstream)
-					fstream.on('close', () => {
-						var type = readchunk.sync(pathimg + finimg, 0, 8)
-						if (!isPng(type))
-						{
-							if (finimg === '-1.png')
-								pro.img_profil_ko(req.session.user.id)
-							allimgok = 2
-							fs.unlink(pathimg + finimg, (err) => {
-								resolve('erreur')
-								if (err) throw err
-							})
-						}
-						else {
-							if (finimg === '-1.png')
-								pro.img_profil_ok(req.session.user.id)
-							resolve('ok')
-						}
-					})
-				}
-				else
-				{
-					allimgok = 2
-					resolve('erreur')
-				}
+		if (filename !== '') {
+			var pathimg = __dirname + '/../public/upload/' + req.session.user.id
+			var finimg = false
+			if (fieldname === 'img1')
+				finimg = '-1.png'
+			else if (fieldname === 'img2')
+				finimg = '-2.png'
+			else if (fieldname === 'img3')
+				finimg = '-3.png'
+			else if (fieldname === 'img4')
+				finimg = '-4.png'
+			else if (fieldname === 'img5')
+				finimg = '-5.png'
+			if (finimg) {
+				fstream = fs.createWriteStream(pathimg + finimg)
+				fstream.on('finish', () => {
+					var type = readchunk.sync(pathimg + finimg, 0, 8)
+					if (!isPng(type) && !isJpg(type))
+					{
+						if (finimg === '-1.png')
+							pro.img_profil_ko(req.session.user.id)
+						fs.unlink(pathimg + finimg, (err) => {
+							if (err) throw err
+						})
+						req.flash('error', 'fichier invalide')
+					}
+					else {
+						if (finimg === '-1.png')
+							pro.img_profil_ok(req.session.user.id)
+						req.flash('succes', 'Photo uplode')
+					}
+					if (fieldname === 'img1' || fieldname === 'img5')
+						res.redirect('/profil')
+				})
+				file.pipe(fstream)
 			}
-			promises.push(promise);
-		})
+		}
+		else {
+			if (fieldname === 'img1' || fieldname === 'img5')
+				res.redirect('/profil')
+		}
 	})
-	Promise.all(promises)
-		.then(uplo => {
-			if (allimgok === 1)
-				req.flash('succes', 'Photo uplode')
-			else
-				req.flash('error', 'fichier invalide')
-			res.redirect('/profil')
-		})
 }
 
 exports.profil = (req, res) => {

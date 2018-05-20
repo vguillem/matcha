@@ -3,7 +3,7 @@ var iploc = require('iplocation')
 var nodemailer = require('nodemailer');
 var Verif = require('../modele/verif.js')
 var vmatcha = 'v.matcha42@gmail.com'
-var vmatchap = '222222qQ'
+var vmatchap = 'PasWoRd'
 
 exports.resetmdppost = (req, res) => {
 	if (req.session.user)
