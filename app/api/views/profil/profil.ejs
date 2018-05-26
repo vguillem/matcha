@@ -1,6 +1,7 @@
 <% include ../header %>
 <form class='containers offset-2 col-8' method='post' action='/profil'>
 <h3>Informations</h3>
+ <div id='popu'><span class='poputxt'><%=locals.gprofil.pop%></span></div>
   <div class="form-row">
     <div class="form-group col-md-3">
       <label for='pgenre'>Genre</label>
@@ -30,7 +31,7 @@
   <div class="form-row">
     <div class="form-group col-md-10">
       <label for='pbio'>Biographie</label>
-      <textarea class="form-control" id='pbio' name='pbio' placeholder="X mots max." rows='5' ><% if (locals.gprofil && locals.gprofil.bio) {%><%= locals.gprofil.bio%><% }%></textarea>
+      <textarea class="form-control" id='pbio' name='pbio' placeholder="250 caracteres max." rows='5' ><% if (locals.gprofil && locals.gprofil.bio) {%><%= locals.gprofil.bio%><% }%></textarea>
     </div>
   </div>
   <button id="validate" type="submit" class="btn btn-primary">Sauvegarder</button>
@@ -92,7 +93,7 @@
 		<div class='row'>
 		<div class='col-md-5'>
 			<input class="form-control" id='pcoordonnees' name='pcoordonnees' placeholder="Ville" <% if (locals.gprofil && locals.gprofil.geolocalise && locals.gprofil.geolocalise === 1 && locals.gprofil.ville) {%> value='<%= locals.gprofil.ville %>'<%}%>>
-			<button id="validate" type="submit" class="btn btn-primary">Localiser</button>
+			<button id="validate" type="submit" class="btn btn-primary">Enregistrer</button>
 		</div>
 		</div>
 	</div>

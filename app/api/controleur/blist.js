@@ -1,7 +1,7 @@
 var Verif = require('../modele/verif.js')
 var nodemailer = require('nodemailer');
 var vmatcha = 'v.matcha42@gmail.com'
-var vmatchap = 'PaSwOrD'
+var vmatchap = 'password'
 
 exports.addblist = (req, res) => {
 	if (!Verif.verif(req.params.id, 1, 0))
@@ -51,10 +51,7 @@ exports.report = (req, res) => {
 			subject: 'Creation compte matcha',
 			text: message
 		};
-		transporter.sendMail(mailOptions, (error, info) => {
-			if (error) {
-				throw error
-			}
+		transporter.sendMail(mailOptions, (err, info) => {
 		}); 
 
 		req.flash('succes', 'une alerte a ete envoye')

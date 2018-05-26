@@ -9,7 +9,7 @@ exports.unlike = (req, res) => {
 	var hist = require('../modele/hist.js')
 	var pro = require('../modele/profil.js')
 	var notif = require('../modele/notif.js')
-	if (!Verif.verif(req.params.id, 1, 0)) {
+	if (!Verif.verif(req.params.id, 1, 0) || req.params.id === req.session.user.id) {
 		res.redirect('/sall')
 	}
 	else {
@@ -17,7 +17,6 @@ exports.unlike = (req, res) => {
 			if (rows1[0]) {
 				pro.uppop(req.params.id, -10)
 				pro.unlike(req.session.user.id, req.params.id)
-				if (req.session.lastpage.substr(0, 5) !== '/user') {
 					hist.unlike(req.session.user.id, req.params.id)
 					pro.getlike(req.session.user.id, req.params.id, (rows) => {
 						if (rows[0])
@@ -25,7 +24,6 @@ exports.unlike = (req, res) => {
 						else
 							notif.unlike(req.session.user.id, req.params.id)
 					})
-				}
 			}
 		})
 		res.redirect(req.session.lastpage)
@@ -33,7 +31,7 @@ exports.unlike = (req, res) => {
 }
 
 exports.like = (req, res) => {
-	if (!Verif.verif(req.params.id, 1, 0)) {
+	if (!Verif.verif(req.params.id, 1, 0) || req.params.id === req.session.user.id) {
 		res.redirect('/sall')
 	}
 	else {
@@ -192,7 +190,7 @@ exports.upload = (req, res) => {
 					else {
 						if (finimg === '-1.png')
 							pro.img_profil_ok(req.session.user.id)
-						req.flash('succes', 'Photo uplode')
+						req.flash('succes', 'Photo uploade')
 					}
 					if (fieldname === 'img1' || fieldname === 'img5')
 						res.redirect('/profil')

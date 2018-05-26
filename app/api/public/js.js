@@ -117,7 +117,7 @@ $(function() {
 		var socket = io.connect()
 		socket.on('notif', function(notif) {
 			$('#zonetmpnotif').append('<div id=tmpnotif> ' + notif.user + notif.data + '</div>')
-			setTimeout(function(){$('#tmpnotif').remove()}, 3000)
+			setTimeout(function(){$('#tmpnotif').remove()}, 4000)
 			
 			$('#notif').text(parseInt($('#notif').text()) + 1)
 		})

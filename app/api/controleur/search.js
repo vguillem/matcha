@@ -203,15 +203,21 @@ exports.user = (req, res) => {
 					} catch(err) {}
 				search.user(rows[0].lng, rows[0].lat, id, req.session.user.id, (rows3) => {
 					if (rows3[0]) {
-						hist.v_user(req.session.user.id, rows3[0].uid)
-						notif.v_user(req.session.user.id, rows3[0].uid)
-						pro.uppop(id, 1)
-						if (rows3[0].tag)
-							rows3[0].tags = rows3[0].tag.split(',')
-						else
-							rows3[0].tags = 0
-						res.locals.users = rows3
-						res.render('search/user')
+						pro.checklike(id, req.session.user.id, (rows4) => {
+							if (rows4[0])
+								rows3[0].l = 1
+							if (req.session.lastpage.substr(0, 5) !== '/user' && req.session.lastpage.substr(0, 5) !== '/like' && req.session.lastpage.substr(0, 7) !== '/unlike') {
+								hist.v_user(req.session.user.id, rows3[0].uid)
+								notif.v_user(req.session.user.id, rows3[0].uid)
+								pro.uppop(id, 1)
+							}
+							if (rows3[0].tag)
+								rows3[0].tags = rows3[0].tag.split(',')
+							else
+								rows3[0].tags = 0
+							res.locals.users = rows3
+							res.render('search/user')
+						})
 					}
 					else
 						res.redirect('/sall')

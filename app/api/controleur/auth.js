@@ -3,7 +3,7 @@ var iploc = require('iplocation')
 var nodemailer = require('nodemailer');
 var Verif = require('../modele/verif.js')
 var vmatcha = 'v.matcha42@gmail.com'
-var vmatchap = 'PaSwOrD'
+var vmatchap = 'password'
 
 exports.resetmdppost = (req, res) => {
 	if (req.session.user)
@@ -87,9 +87,6 @@ exports.resendmail = (req, res) => {
 						text: message
 					};
 					transporter.sendMail(mailOptions, (error, info) => {
-						if (error) {
-							throw error
-						}
 					}); 
 					req.flash('succes', 'Le mail d activation a ete envoye')
 					res.redirect('/login')
@@ -185,9 +182,6 @@ exports.forgot = (req, res) => {
 					text: message
 				};
 				transporter.sendMail(mailOptions, (error, info) => {
-					if (error) {
-						throw error
-					}
 				}); 
 				res.redirect('/login')
 			}
@@ -325,9 +319,6 @@ exports.create = (req, res) => {
 										text: message
 									};
 									transporter.sendMail(mailOptions, (error, info) => {
-										if (error) {
-											throw error
-										}
 									}); 
 								req.flash('succes', 'Compte créé, un mail d activation a ete envoye')
 							})

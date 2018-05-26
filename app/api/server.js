@@ -134,9 +134,6 @@ app.post('/compte', (req, res) => {
 
 
 app.get('/forgot', (req, res) => {
-	if(req.session.user)
-		res.redirect('/sall')
-	else
 		res.render('auth/forgot')
 })
 
@@ -179,10 +176,12 @@ app.get('/user', (req, res) => {
 	}
 	else {
 		Search.user(req, res)
-		io.sockets.to(users[id]).emit('notif',  {
-			user : req.session.user.login,
-			data : ' a visite votre profil'
-		})
+		if (req.session.lastpage.substr(0, 5) !== '/user' && req.session.lastpage.substr(0, 5) !== '/like' && req.session.lastpage.substr(0, 7) !== '/unlike') {
+			io.sockets.to(users[id]).emit('notif',  {
+				user : req.session.user.login,
+				data : ' a visite votre profil'
+			})
+		}
 	}
 })
 
@@ -214,11 +213,6 @@ app.get('/like/:id', (req, res) => {
 		})
 	}
 })
-/*
-app.get('/chat', (req, res) => {
-	Chat.chat(req, res)
-})
-*/
 
 app.get('/chats', (req, res) => {
 	Chat.chats(req, res)

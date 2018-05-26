@@ -17,10 +17,24 @@
       <input type="email" class="form-control" id='cemail' name='cemail' placeholder="Email" value='<% if (locals.mail){%><%=locals.mail%><%}%>'>
     </div>
     <div class="form-group col-md-6">
-      <label for="cpasswd">Password (8 min)</label>
+      <label for="cpasswd">Password</label><span data-toggle='modal' data-target='#infopass'> ?</span>
       <input type="password" class="form-control" id='cpasswd' name='cpasswd' placeholder="Password">
     </div>
   </div>
   <button id="validate" type="submit" class="btn btn-primary">Modifier</button>
 </form>
+<div class='modal' id='infopass'>
+	<div class='modal-dialog'>
+		<div class='modal-content'>
+			<div class='modal-header'>
+				<button type='button' class='close' data-dismiss='modal'>&times;</button>
+			</div>
+			<div class='modal-body'>
+			Le mot de passe doit contenir au minimum 1 chiffre, une minuscule, une majuscule.
+			Il doit avoir une longueur entre 8 et 30 caracteres.
+			</div>
+		</div>
+	</div>
+</div>
+
 <% include ../footer %>

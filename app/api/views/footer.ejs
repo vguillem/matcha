@@ -1,9 +1,9 @@
 <% if (locals.ichat) {%>
 <div id='ichat'>
 <div class='chatlogin border border-bottom-0'><div class='chatlogintxt d-inline-block'><%= locals.ichat%></div><div class='border border-danger closec d-inline-block'><a href='/closechat'>X</div></a></div>
-<div id='icorp'>
+<div id='icorp' class='border'>
 <span id='clogin' class='d-none'><%= locals.clogin%></span>
-<form action=''>
+<div>
 		<ul id='message' class='card-body'>
 		<%locals.cchat.forEach(function(chatmes){%>
 			<li><span class='messagelogin <%=chatmes.login_posteur%>'><%=chatmes.login_posteur%></span> : <span class='messagecontent <%=chatmes.login_posteur%>'><%=chatmes.message%></span></li>
@@ -12,7 +12,7 @@
 		<div class="chatsend">
 		<input id='m' class=""/><button id='ichats' class='btn btn-primary'>Envoyer</button>
 		</div>
-</form>
+</div>
 </div>
 </div>
 <%}%>

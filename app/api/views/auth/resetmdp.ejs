@@ -2,10 +2,24 @@
 <form class='containers offset-1 col-10' method='post' action='/resetmdp?code=<% if (locals.code) { %><%=locals.code%> <% } %>'>
   <div class="form-row">
     <div class="form-group offset-md-3 col-md-6">
-      <label for='passwd'>Nouveau mot de passe</label>
+      <label for='passwd'>Nouveau mot de passe</label><span data-toggle='modal' data-target='#infopass'> ?</span>
       <input type="password" class="form-control" id='passwd' name='passwd' placeholder="password" value=''>
     </div>
   </div>
   <button type="submit" class="btn btn-primary offset-md-3 ">Reinitialiser</button>
 </form>
+<div class='modal' id='infopass'>
+	<div class='modal-dialog'>
+		<div class='modal-content'>
+			<div class='modal-header'>
+				<button type='button' class='close' data-dismiss='modal'>&times;</button>
+			</div>
+			<div class='modal-body'>
+			Le mot de passe doit contenir au minimum 1 chiffre, une minuscule, une majuscule.
+			Il doit avoir une longueur entre 8 et 30 caracteres.
+			</div>
+		</div>
+	</div>
+</div>
+
 <% include ../footer %>
